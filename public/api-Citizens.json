@@ -1,0 +1,156 @@
+{
+    "Citizens": {
+        "objective": {
+            "cnpc right": {
+                "condition": [
+                    {
+                        "name": "id",
+                        "pattern": "List<Int>"
+                    },
+                    {
+                        "name": "type",
+                        "pattern": "List<String>"
+                    },
+                    {
+                        "name": "name",
+                        "pattern": "List<String>"
+                    },
+                    {
+                        "name": "item-main",
+                        "pattern": "List<String>"
+                    },
+                    {
+                        "name": "item-off",
+                        "pattern": "List<String>"
+                    },
+                    {
+                        "name": "position",
+                        "pattern": "String"
+                    }
+                ],
+                "goal": [
+                    {
+                        "name": "amount",
+                        "pattern": "Number"
+                    }
+                ],
+                "name": "Citizens NPC 右键",
+                "description": [
+                    "右键点击 Citizens NPC"
+                ],
+                "params": [
+                    {
+                        "name": "id",
+                        "type": "List<Int>",
+                        "description": "NPC ID 列表 (整数)"
+                    },
+                    {
+                        "name": "type",
+                        "type": "List<String>",
+                        "description": "NPC 类型列表"
+                    },
+                    {
+                        "name": "name",
+                        "type": "List<String>",
+                        "description": "NPC 名称列表"
+                    },
+                    {
+                        "name": "item-main",
+                        "type": "List<String>",
+                        "description": "主手物品列表"
+                    },
+                    {
+                        "name": "item-off",
+                        "type": "List<String>",
+                        "description": "副手物品列表"
+                    },
+                    {
+                        "name": "position",
+                        "type": "String",
+                        "description": "位置"
+                    },
+                    {
+                        "name": "amount",
+                        "type": "Number",
+                        "description": "数量"
+                    }
+                ]
+            },
+            "cnpc left": {
+                "condition": [
+                    {
+                        "name": "id",
+                        "pattern": "List<Int>"
+                    },
+                    {
+                        "name": "type",
+                        "pattern": "List<String>"
+                    },
+                    {
+                        "name": "name",
+                        "pattern": "List<String>"
+                    },
+                    {
+                        "name": "item-main",
+                        "pattern": "List<String>"
+                    },
+                    {
+                        "name": "item-off",
+                        "pattern": "List<String>"
+                    },
+                    {
+                        "name": "position",
+                        "pattern": "String"
+                    }
+                ],
+                "goal": [
+                    {
+                        "name": "amount",
+                        "pattern": "Number"
+                    }
+                ],
+                "name": "Citizens NPC 左键",
+                "description": [
+                    "左键点击 Citizens NPC"
+                ],
+                "params": [
+                    {
+                        "name": "id",
+                        "type": "List<Int>",
+                        "description": "NPC ID 列表 (整数)"
+                    },
+                    {
+                        "name": "type",
+                        "type": "List<String>",
+                        "description": "NPC 类型列表"
+                    },
+                    {
+                        "name": "name",
+                        "type": "List<String>",
+                        "description": "NPC 名称列表"
+                    },
+                    {
+                        "name": "item-main",
+                        "type": "List<String>",
+                        "description": "主手物品列表"
+                    },
+                    {
+                        "name": "item-off",
+                        "type": "List<String>",
+                        "description": "副手物品列表"
+                    },
+                    {
+                        "name": "position",
+                        "type": "String",
+                        "description": "位置"
+                    },
+                    {
+                        "name": "amount",
+                        "type": "Number",
+                        "description": "数量"
+                    }
+                ]
+            }
+        }
+    }
+}

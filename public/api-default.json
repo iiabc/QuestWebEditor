@@ -1,0 +1,1125 @@
+{
+	"minecraft": {
+		"objective": {
+			"block break": {
+				"condition": [
+					{
+						"name": "material",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					},
+					{
+						"name": "exp",
+						"pattern": "Number"
+					},
+					{
+						"name": "silk-touch",
+						"pattern": "Boolean"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "方块破坏",
+				"description": [
+					"玩家破坏方块"
+				],
+				"params": [
+					{
+						"name": "material",
+						"type": "List<String>",
+						"description": "方块材质列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置 (world x y z)"
+					},
+					{
+						"name": "exp",
+						"type": "Number",
+						"description": "掉落经验值"
+					},
+					{
+						"name": "silk-touch",
+						"type": "Boolean",
+						"description": "是否精准采集"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"block place": {
+				"condition": [
+					{
+						"name": "material",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "方块放置",
+				"description": [
+					"玩家放置方块"
+				],
+				"params": [
+					{
+						"name": "material",
+						"type": "List<String>",
+						"description": "方块材质列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置 (world x y z)"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"block interact": {
+				"condition": [
+					{
+						"name": "action",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "hand",
+						"pattern": "Boolean"
+					},
+					{
+						"name": "face",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "方块交互",
+				"description": [
+					"玩家与方块交互"
+				],
+				"params": [
+					{
+						"name": "action",
+						"type": "List<String>",
+						"description": "动作列表"
+					},
+					{
+						"name": "hand",
+						"type": "Boolean",
+						"description": "是否主手"
+					},
+					{
+						"name": "face",
+						"type": "List<String>",
+						"description": "交互面列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"block ignite": {
+				"condition": [
+					{
+						"name": "cause",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "方块点燃",
+				"description": [
+					"玩家点燃方块"
+				],
+				"params": [
+					{
+						"name": "cause",
+						"type": "List<String>",
+						"description": "点燃原因列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"block harvest": {
+				"condition": [
+					{
+						"name": "material",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "item",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "方块收获",
+				"description": [
+					"玩家收获方块（如浆果）"
+				],
+				"params": [
+					{
+						"name": "material",
+						"type": "List<String>",
+						"description": "方块材质列表"
+					},
+					{
+						"name": "item",
+						"type": "List<String>",
+						"description": "掉落物品列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"block farm": {
+				"condition": [
+					{
+						"name": "material",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "hand",
+						"pattern": "Boolean"
+					},
+					{
+						"name": "item",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "耕地",
+				"description": [
+					"玩家耕地"
+				],
+				"params": [
+					{
+						"name": "material",
+						"type": "List<String>",
+						"description": "方块材质列表"
+					},
+					{
+						"name": "hand",
+						"type": "Boolean",
+						"description": "是否主手"
+					},
+					{
+						"name": "item",
+						"type": "List<String>",
+						"description": "工具物品列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"craft item": {
+				"condition": [
+					{
+						"name": "matrix",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "合成物品",
+				"description": [
+					"玩家合成物品"
+				],
+				"params": [
+					{
+						"name": "matrix",
+						"type": "List<String>",
+						"description": "合成配方物品列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"enchant item": {
+				"condition": [
+					{
+						"name": "item",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "cost",
+						"pattern": "Number"
+					},
+					{
+						"name": "type",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "附魔物品",
+				"description": [
+					"玩家附魔物品"
+				],
+				"params": [
+					{
+						"name": "item",
+						"type": "List<String>",
+						"description": "物品列表"
+					},
+					{
+						"name": "cost",
+						"type": "Number",
+						"description": "附魔消耗等级"
+					},
+					{
+						"name": "type",
+						"type": "List<String>",
+						"description": "附魔类型列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"entity interact": {
+				"condition": [
+					{
+						"name": "hand",
+						"pattern": "Boolean"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "实体交互",
+				"description": [
+					"玩家与实体交互"
+				],
+				"params": [
+					{
+						"name": "hand",
+						"type": "Boolean",
+						"description": "是否主手"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"player anvil": {
+				"condition": [
+					{
+						"name": "text",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "cost",
+						"pattern": "Number"
+					},
+					{
+						"name": "matrix",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "使用铁砧",
+				"description": [
+					"玩家使用铁砧"
+				],
+				"params": [
+					{
+						"name": "text",
+						"type": "List<String>",
+						"description": "重命名文本列表"
+					},
+					{
+						"name": "cost",
+						"type": "Number",
+						"description": "花费经验等级"
+					},
+					{
+						"name": "matrix",
+						"type": "List<String>",
+						"description": "配方物品列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"player chat": {
+				"condition": [
+					{
+						"name": "content",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "玩家聊天",
+				"description": [
+					"玩家发送聊天信息"
+				],
+				"params": [
+					{
+						"name": "content",
+						"type": "List<String>",
+						"description": "聊天内容列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"player command": {
+				"condition": [
+					{
+						"name": "command",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "玩家执行命令",
+				"description": [
+					"玩家执行命令"
+				],
+				"params": [
+					{
+						"name": "command",
+						"type": "List<String>",
+						"description": "命令列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"player death": {
+				"condition": [
+					{
+						"name": "cause",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "exp",
+						"pattern": "Number"
+					},
+					{
+						"name": "damage",
+						"pattern": "Number"
+					},
+					{
+						"name": "damage-final",
+						"pattern": "Number"
+					},
+					{
+						"name": "drops",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "attacker",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "weapon",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "message",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "玩家死亡",
+				"description": [
+					"玩家死亡"
+				],
+				"params": [
+					{
+						"name": "cause",
+						"type": "List<String>",
+						"description": "死亡原因列表"
+					},
+					{
+						"name": "exp",
+						"type": "Number",
+						"description": "掉落经验值"
+					},
+					{
+						"name": "damage",
+						"type": "Number",
+						"description": "受到伤害"
+					},
+					{
+						"name": "damage-final",
+						"type": "Number",
+						"description": "最终伤害"
+					},
+					{
+						"name": "drops",
+						"type": "List<String>",
+						"description": "掉落物品列表"
+					},
+					{
+						"name": "attacker",
+						"type": "List<String>",
+						"description": "攻击者列表"
+					},
+					{
+						"name": "weapon",
+						"type": "List<String>",
+						"description": "武器列表"
+					},
+					{
+						"name": "message",
+						"type": "List<String>",
+						"description": "死亡消息列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"player fish": {
+				"condition": [
+					{
+						"name": "entity",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "entity-hook",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "state",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "exp",
+						"pattern": "Number"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "玩家钓鱼",
+				"description": [
+					"玩家钓鱼"
+				],
+				"params": [
+					{
+						"name": "entity",
+						"type": "List<String>",
+						"description": "钓到的实体列表"
+					},
+					{
+						"name": "entity-hook",
+						"type": "List<String>",
+						"description": "鱼钩实体列表"
+					},
+					{
+						"name": "state",
+						"type": "List<String>",
+						"description": "钓鱼状态列表"
+					},
+					{
+						"name": "exp",
+						"type": "Number",
+						"description": "经验值"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"player inventory": {
+				"condition": [
+					{
+						"name": "item",
+						"pattern": "String"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "背包物品检测",
+				"description": [
+					"玩家背包中拥有特定物品"
+				],
+				"params": [
+					{
+						"name": "item",
+						"type": "String",
+						"description": "物品 (String/Inline)"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"player kill": {
+				"condition": [
+					{
+						"name": "entity",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "weapon",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "cause",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "damage",
+						"pattern": "Number"
+					},
+					{
+						"name": "damage-final",
+						"pattern": "Number"
+					},
+					{
+						"name": "exp",
+						"pattern": "Number"
+					},
+					{
+						"name": "drops",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "玩家击杀",
+				"description": [
+					"玩家击杀实体"
+				],
+				"params": [
+					{
+						"name": "entity",
+						"type": "List<String>",
+						"description": "被击杀实体列表"
+					},
+					{
+						"name": "weapon",
+						"type": "List<String>",
+						"description": "武器列表"
+					},
+					{
+						"name": "cause",
+						"type": "List<String>",
+						"description": "伤害原因列表"
+					},
+					{
+						"name": "damage",
+						"type": "Number",
+						"description": "造成伤害"
+					},
+					{
+						"name": "damage-final",
+						"type": "Number",
+						"description": "最终伤害"
+					},
+					{
+						"name": "exp",
+						"type": "Number",
+						"description": "掉落经验"
+					},
+					{
+						"name": "drops",
+						"type": "List<String>",
+						"description": "掉落物品列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"player move": {
+				"condition": [
+					{
+						"name": "from",
+						"pattern": "String"
+					},
+					{
+						"name": "to",
+						"pattern": "String"
+					},
+					{
+						"name": "biome",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "玩家移动",
+				"description": [
+					"玩家移动"
+				],
+				"params": [
+					{
+						"name": "from",
+						"type": "String",
+						"description": "来源位置"
+					},
+					{
+						"name": "to",
+						"type": "String",
+						"description": "目标位置"
+					},
+					{
+						"name": "biome",
+						"type": "List<String>",
+						"description": "生物群系列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "当前位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"player swap hand": {
+				"condition": [
+					{
+						"name": "item-main",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "item-off",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "交换手持物品",
+				"description": [
+					"玩家交换主副手物品"
+				],
+				"params": [
+					{
+						"name": "item-main",
+						"type": "List<String>",
+						"description": "主手物品列表"
+					},
+					{
+						"name": "item-off",
+						"type": "List<String>",
+						"description": "副手物品列表"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"furnace extract": {
+				"condition": [
+					{
+						"name": "material",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "exp",
+						"pattern": "Number"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "熔炉取出",
+				"description": [
+					"从熔炉取出物品"
+				],
+				"params": [
+					{
+						"name": "material",
+						"type": "List<String>",
+						"description": "物品材质列表"
+					},
+					{
+						"name": "exp",
+						"type": "Number",
+						"description": "经验值"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"kether": {
+				"condition": [
+					{
+						"name": "value",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "Kether 脚本",
+				"description": [
+					"执行 Kether 脚本 (同步)"
+				],
+				"params": [
+					{
+						"name": "value",
+						"type": "String",
+						"description": "脚本内容 (返回 boolean)"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"async kether": {
+				"condition": [
+					{
+						"name": "value",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "Async Kether 脚本",
+				"description": [
+					"执行 Kether 脚本 (异步)"
+				],
+				"params": [
+					{
+						"name": "value",
+						"type": "String",
+						"description": "脚本内容 (返回 boolean)"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"conversation": {
+				"condition": [
+					{
+						"name": "talk",
+						"pattern": "String"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "对话",
+				"description": [
+					"完成对话"
+				],
+				"params": [
+					{
+						"name": "talk",
+						"type": "String",
+						"description": "对话ID"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			}
+		}
+	}
+}

@@ -1,0 +1,81 @@
+{
+    "MythicMobs": {
+        "objective": {
+            "mm kill": {
+                "condition": [
+                    {
+                        "name": "id",
+                        "pattern": "List<String>"
+                    },
+                    {
+                        "name": "type",
+                        "pattern": "List<String>"
+                    },
+                    {
+                        "name": "level",
+                        "pattern": "Number"
+                    },
+                    {
+                        "name": "min-level",
+                        "pattern": "Number"
+                    },
+                    {
+                        "name": "weapon",
+                        "pattern": "List<String>"
+                    },
+                    {
+                        "name": "position",
+                        "pattern": "String"
+                    }
+                ],
+                "goal": [
+                    {
+                        "name": "amount",
+                        "pattern": "Number"
+                    }
+                ],
+                "name": "MythicMobs 击杀",
+                "description": [
+                    "击杀 MythicMobs 怪物"
+                ],
+                "params": [
+                    {
+                        "name": "id",
+                        "type": "List<String>",
+                        "description": "怪物 ID 列表"
+                    },
+                    {
+                        "name": "type",
+                        "type": "List<String>",
+                        "description": "怪物类型列表"
+                    },
+                    {
+                        "name": "level",
+                        "type": "Number",
+                        "description": "等级"
+                    },
+                    {
+                        "name": "min-level",
+                        "type": "Number",
+                        "description": "最低等级"
+                    },
+                    {
+                        "name": "weapon",
+                        "type": "List<String>",
+                        "description": "武器列表"
+                    },
+                    {
+                        "name": "position",
+                        "type": "String",
+                        "description": "位置"
+                    },
+                    {
+                        "name": "amount",
+                        "type": "Number",
+                        "description": "数量"
+                    }
+                ]
+            }
+        }
+    }
+}

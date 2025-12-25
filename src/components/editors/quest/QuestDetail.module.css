@@ -1,0 +1,26 @@
+.list {
+    position: relative;
+    display: flex;
+    border-bottom: 1px solid var(--mantine-color-dark-6);
+}
+
+.tab {
+    background-color: transparent;
+    border: none;
+    z-index: 1;
+    transition: color 0.2s ease;
+}
+
+.tab[data-active] {
+    color: var(--mantine-color-blue-4);
+}
+
+.indicator {
+    position: absolute;
+    bottom: -1px;
+    height: 2px;
+    background-color: var(--mantine-color-blue-5);
+    transition: transform 250ms ease, width 250ms ease;
+    z-index: 2;
+    border-radius: 2px;
+}
