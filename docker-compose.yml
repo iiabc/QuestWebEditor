@@ -1,0 +1,8 @@
+services:
+  web:
+    build: .
+    container_name: questengine-web-editor
+    ports:
+      - "3105:80"
+    restart: always
+
