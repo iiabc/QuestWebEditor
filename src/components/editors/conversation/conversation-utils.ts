@@ -160,177 +160,177 @@ export const autoLayout = (nodes: Node[], edges: Edge[]) => {
 };
 
 export const parseConversationToFlow = (yamlContent: string) => {
-  const data = parseYaml(yamlContent) || {};
-  const nodes: Node[] = [];
-  const edges: Edge[] = [];
+    const data = parseYaml(yamlContent) || {};
+    const nodes: Node[] = [];
+    const edges: Edge[] = [];
 
-  let hasCanvasData = false;
-  let conversationOptions: ConversationOptions = {};
+    let hasCanvasData = false;
+    let conversationOptions: ConversationOptions = {};
 
-  // QuestEngine 格式不使用 __option__，跳过处理
+    // QuestEngine 格式不使用 __option__，跳过处理
 
-  Object.keys(data).forEach((key) => {
-    if (key === '__option__') return; // Skip metadata (for backward compatibility)
+    Object.keys(data).forEach((key) => {
+        if (key === '__option__') return; // Skip metadata (for backward compatibility)
 
-    const section = data[key];
+        const section = data[key];
 
-    // Determine position
-    let position = { x: 0, y: 0 };
-    if (section.canvas) {
-        position = { x: section.canvas.x, y: section.canvas.y };
-        hasCanvasData = true;
-    }
+        // Determine position
+        let position = { x: 0, y: 0 };
+        if (section.canvas) {
+            position = { x: section.canvas.x, y: section.canvas.y };
+            hasCanvasData = true;
+        }
 
-    // Check for Switch Node (when property)
-    if (section.when && Array.isArray(section.when)) {
-        const branches = section.when.map((branch: any, index: number) => {
-            let actionType: 'open' | 'run' = 'run';
-            let actionValue = '';
+        // Check for Switch Node (when property)
+        if (section.when && Array.isArray(section.when)) {
+            const branches = section.when.map((branch: any, index: number) => {
+                let actionType: 'open' | 'run' = 'run';
+                let actionValue = '';
 
-            if (branch.open) {
-                actionType = 'open';
-                actionValue = branch.open;
-            } else if (branch.run) {
-                actionType = 'run';
-                actionValue = branch.run;
-            }
-
-            return {
-                id: `${key}-branch-${index}`,
-                condition: branch.if || 'true',
-                actionType,
-                actionValue
-            };
-        });
-
-        nodes.push({
-            id: key,
-            type: 'switch',
-            position,
-            data: {
-                label: key,
-                npcId: section['npc id'],
-                branches
-            }
-        });
-
-        // Parse Edges for Switch
-        branches.forEach((branch: any) => {
-            if (branch.actionType === 'open') {
-                edges.push({
-                    id: `e-${branch.id}-${branch.actionValue}`,
-                    source: key,
-                    sourceHandle: branch.id,
-                    target: branch.actionValue,
-                    type: 'default',
-                    animated: true,
-                });
-            }
-        });
-
-    } else if (section.content || section.answer || section.npc || section.npcs || section.name || section.tags || section.player || section.agent || section.condition || section['npc id']) {
-        // Agent Node (QuestEngine format: content/answer, or QuestEngine legacy format: npc/player)
-        // QuestEngine format takes priority
-        const npcLines = section.content 
-            ? (Array.isArray(section.content) ? section.content : [section.content])
-            : (Array.isArray(section.npc) ? section.npc : (section.npc ? [section.npc] : []));
-        const playerOptions = section.answer 
-            ? (Array.isArray(section.answer) ? section.answer : [])
-            : (Array.isArray(section.player) ? section.player : []);
-
-        const options = playerOptions.map((opt: any, index: number) => {
-            let actions = '';
-            let next = opt.open || opt.next || '';
-
-            // QuestEngine format: answer has text, action, open fields
-            // QuestEngine legacy format: player has reply, then, next fields
-            if (opt.action) {
-                // QuestEngine format: action field contains script
-                actions = typeof opt.action === 'string' ? opt.action : String(opt.action);
-                next = opt.open || '';
-            } else if (opt.then) {
-                // QuestEngine legacy format: then field may contain goto
-                const thenStr = typeof opt.then === 'string' ? opt.then : String(opt.then);
-
-                // 如果没有 next 字段，从 then 中解析
-                if (!next) {
-                    // 匹配 goto 后面的节点ID，支持中文、字母、数字、下划线等字符
-                    const gotoMatch = thenStr.match(/goto\s+(\S+)/);
-                    if (gotoMatch) {
-                        next = gotoMatch[1].trim();
-                    }
+                if (branch.open) {
+                    actionType = 'open';
+                    actionValue = branch.open;
+                } else if (branch.run) {
+                    actionType = 'run';
+                    actionValue = branch.run;
                 }
 
-                // 移除 goto 语句，只保留纯脚本部分
-                actions = thenStr
-                    .replace(/goto\s+\S+/g, '')
-                    .replace(/^\s+|\s+$/g, '')
-                    .trim();
-            }
+                return {
+                    id: `${key}-branch-${index}`,
+                    condition: branch.if || 'true',
+                    actionType,
+                    actionValue
+                };
+            });
 
-            // QuestEngine format: text field; QuestEngine legacy format: reply field
-            const text = opt.text || opt.reply || '...';
-            
-            // 提取玩家选项的自定义字段
-            const { reply, text: textField, action, open, if: optIf, then, next: nextField, ...optCustomFields } = opt;
+            nodes.push({
+                id: key,
+                type: 'switch',
+                position,
+                data: {
+                    label: key,
+                    npcId: section['npc id'],
+                    branches
+                }
+            });
 
-            return {
-                id: `${key}-opt-${index}`,
-                text: text,
-                condition: opt.if,
-                actions: actions,  // 纯脚本内容（不包含 goto）
-                next: next,  // 使用 YAML 中的 open/next 或从 then 解析出的 next
-                ...optCustomFields  // 包含 dos, dosh, gscript 等自定义字段
-            };
-        });
+            // Parse Edges for Switch
+            branches.forEach((branch: any) => {
+                if (branch.actionType === 'open') {
+                    edges.push({
+                        id: `e-${branch.id}-${branch.actionValue}`,
+                        source: key,
+                        sourceHandle: branch.id,
+                        target: branch.actionValue,
+                        type: 'default',
+                        animated: true,
+                    });
+                }
+            });
 
-        // 提取节点的自定义字段（排除已知字段）
-        const { npc, npcs, content, answer, player, agent, condition, canvas, name, tags, 'npc id': npcIdField, ...nodeCustomFields } = section;
+        } else if (section.content || section.answer || section.npc || section.npcs || section.name || section.tags || section.player || section.agent || section.condition || section['npc id']) {
+            // Agent Node (QuestEngine format: content/answer, or QuestEngine legacy format: npc/player)
+            // QuestEngine format takes priority
+            const npcLines = section.content
+                ? (Array.isArray(section.content) ? section.content : [section.content])
+                : (Array.isArray(section.npc) ? section.npc : (section.npc ? [section.npc] : []));
+            const playerOptions = section.answer
+                ? (Array.isArray(section.answer) ? section.answer : [])
+                : (Array.isArray(section.player) ? section.player : []);
 
-        nodes.push({
-            id: key,
-            type: 'agent',
-            position,
-            data: {
-                label: key,
-                npcLines,
-                playerOptions: options,
-                npcId: section.npc || (section.npcs && section.npcs.length > 0 ? section.npcs[0] : undefined),
-                npcs: section.npcs || (section.npc ? [section.npc] : undefined),
-                name: section.name,
-                tags: section.tags,
-                condition: section.condition,
-                agent: section.agent,
-                ...nodeCustomFields  // 包含 root, self, model 等自定义字段
-            }
-        });
+            const options = playerOptions.map((opt: any, index: number) => {
+                let actions = '';
+                let next = opt.open || opt.next || '';
 
-        // Parse Edges
-        options.forEach((opt: any) => {
-            if (opt.next) {
-                edges.push({
-                    id: `e-${opt.id}-${opt.next}`,
-                    source: key,
-                    sourceHandle: opt.id,
-                    target: opt.next,
-                    type: 'default',
-                    animated: true,
-                });
-            }
-        });
+                // QuestEngine format: answer has text, action, open fields
+                // QuestEngine legacy format: player has reply, then, next fields
+                if (opt.action) {
+                    // QuestEngine format: action field contains script
+                    actions = typeof opt.action === 'string' ? opt.action : String(opt.action);
+                    next = opt.open || '';
+                } else if (opt.then) {
+                    // QuestEngine legacy format: then field may contain goto
+                    const thenStr = typeof opt.then === 'string' ? opt.then : String(opt.then);
+
+                    // 如果没有 next 字段，从 then 中解析
+                    if (!next) {
+                        // 匹配 goto 后面的节点ID，支持中文、字母、数字、下划线等字符
+                        const gotoMatch = thenStr.match(/goto\s+(\S+)/);
+                        if (gotoMatch) {
+                            next = gotoMatch[1].trim();
+                        }
+                    }
+
+                    // 移除 goto 语句，只保留纯脚本部分
+                    actions = thenStr
+                        .replace(/goto\s+\S+/g, '')
+                        .replace(/^\s+|\s+$/g, '')
+                        .trim();
+                }
+
+                // QuestEngine format: text field; QuestEngine legacy format: reply field
+                const text = opt.text || opt.reply || '...';
+
+                // 提取玩家选项的自定义字段
+                const { reply, text: textField, action, open, if: optIf, then, next: nextField, ...optCustomFields } = opt;
+
+                return {
+                    id: `${key}-opt-${index}`,
+                    text: text,
+                    condition: opt.if,
+                    actions: actions,  // 纯脚本内容（不包含 goto）
+                    next: next,  // 使用 YAML 中的 open/next 或从 then 解析出的 next
+                    ...optCustomFields  // 包含 dos, dosh, gscript 等自定义字段
+                };
+            });
+
+            // 提取节点的自定义字段（排除已知字段）
+            const { npc, npcs, content, answer, player, agent, condition, canvas, name, tags, 'npc id': npcIdField, ...nodeCustomFields } = section;
+
+            nodes.push({
+                id: key,
+                type: 'agent',
+                position,
+                data: {
+                    label: key,
+                    npcLines,
+                    playerOptions: options,
+                    npcId: section.npc || (section.npcs && section.npcs.length > 0 ? section.npcs[0] : undefined),
+                    npcs: section.npcs || (section.npc ? [section.npc] : undefined),
+                    name: section.name,
+                    tags: section.tags,
+                    condition: section.condition,
+                    agent: section.agent,
+                    ...nodeCustomFields  // 包含 root, self, model 等自定义字段
+                }
+            });
+
+            // Parse Edges
+            options.forEach((opt: any) => {
+                if (opt.next) {
+                    edges.push({
+                        id: `e-${opt.id}-${opt.next}`,
+                        source: key,
+                        sourceHandle: opt.id,
+                        target: opt.next,
+                        type: 'default',
+                        animated: true,
+                    });
+                }
+            });
+        }
+    });
+
+    // Apply auto layout if no canvas data found
+    if (!hasCanvasData && nodes.length > 0) {
+        const layouted = autoLayout(nodes, edges);
+        return { ...layouted, options: conversationOptions };
     }
-  });
 
-  // Apply auto layout if no canvas data found
-  if (!hasCanvasData && nodes.length > 0) {
-      const layouted = autoLayout(nodes, edges);
-      return { ...layouted, options: conversationOptions };
-  }
-
-  return { nodes, edges, options: conversationOptions };
+    return { nodes, edges, options: conversationOptions };
 };
 
-export const generateYamlFromFlow = (nodes: Node[], edges: Edge[], options?: ConversationOptions) => {
+export const generateYamlFromFlow = (nodes: Node[], edges: Edge[], _options?: ConversationOptions) => {
     // QuestEngine format doesn't use __option__
     const conversationObj: any = {};
 

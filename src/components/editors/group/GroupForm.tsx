@@ -74,7 +74,7 @@ export default function GroupForm({ fileId }: GroupFormProps) {
                         label="任务列表"
                         description="每行一个任务 ID，例如 example1"
                         value={(groupData.quests || []).join('\n')}
-                        onChange={handleQuestListChange}
+                        onChange={(e) => handleQuestListChange(e.target.value)}
                         autosize
                         minRows={5}
                     />

@@ -183,33 +183,45 @@ export function AgentEditor({ data, onUpdate, types = [] }: AgentEditorProps) {
                                 />
                                 <FormInput
                                     label="位置"
-                                    description="导航位置，格式：world x y z"
+                                    description="导航位置，格式：world x y z（与 NPC ID 二选一）"
                                     value={data?.track?.navigate?.location || ''}
-                                    onChange={(e) => onUpdate({ 
-                                        ...data, 
-                                        track: { 
-                                            ...data?.track, 
-                                            navigate: {
-                                                ...data?.track?.navigate,
-                                                location: e.target.value || ''
-                                            }
-                                        } 
-                                    })}
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        onUpdate({ 
+                                            ...data, 
+                                            track: { 
+                                                ...data?.track, 
+                                                navigate: {
+                                                    ...data?.track?.navigate,
+                                                    location: newValue || '',
+                                                    // 如果设置了位置，清空 NPC ID
+                                                    ...(newValue ? { adyeshach: '' } : {})
+                                                }
+                                            } 
+                                        });
+                                    }}
+                                    disabled={!!data?.track?.navigate?.adyeshach}
                                 />
                                 <FormInput
                                     label="NPC ID"
-                                    description="Adyeshach NPC ID（如果设置，将使用 NPC 位置作为导航目标）"
+                                    description="Adyeshach NPC ID（与位置二选一）"
                                     value={data?.track?.navigate?.adyeshach || ''}
-                                    onChange={(e) => onUpdate({ 
-                                        ...data, 
-                                        track: { 
-                                            ...data?.track, 
-                                            navigate: {
-                                                ...data?.track?.navigate,
-                                                adyeshach: e.target.value || ''
-                                            }
-                                        } 
-                                    })}
+                                    onChange={(e) => {
+                                        const newValue = e.target.value;
+                                        onUpdate({ 
+                                            ...data, 
+                                            track: { 
+                                                ...data?.track, 
+                                                navigate: {
+                                                    ...data?.track?.navigate,
+                                                    adyeshach: newValue || '',
+                                                    // 如果设置了 NPC ID，清空位置
+                                                    ...(newValue ? { location: '' } : {})
+                                                }
+                                            } 
+                                        });
+                                    }}
+                                    disabled={!!data?.track?.navigate?.location}
                                 />
                             </Stack>
                         </FormAddon>

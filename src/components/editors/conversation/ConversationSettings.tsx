@@ -1,4 +1,3 @@
-import React from 'react';
 import { Modal, Stack, Button, Group, Text, Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 
@@ -13,7 +12,7 @@ interface ConversationSettingsProps {
     onSave: (options: ConversationOptions) => void;
 }
 
-export function ConversationSettings({ opened, onClose, options, onSave }: ConversationSettingsProps) {
+export function ConversationSettings({ opened, onClose, options: _options, onSave }: ConversationSettingsProps) {
     const handleSave = () => {
         onSave({});
         onClose();
