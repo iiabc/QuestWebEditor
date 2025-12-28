@@ -1,4 +1,4 @@
-import React, { useMemo, useState, KeyboardEvent } from 'react';
+import { useMemo, useState, KeyboardEvent } from 'react';
 import { Modal, Combobox, TextInput, Stack, Text, Button, Group, ScrollArea, Box, Badge, ActionIcon } from '@mantine/core';
 import { useCombobox } from '@mantine/core';
 import { VirtualFile } from '@/store/useProjectStore';

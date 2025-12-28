@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ScrollArea, Group, Text, ActionIcon, Box, Button } from '@mantine/core';
 import { IconPlus, IconTrash, IconGripVertical } from '@tabler/icons-react';
 import { DragDropContext, Droppable, Draggable, DropResult, DroppableProvided, DraggableProvided } from '@hello-pangea/dnd';

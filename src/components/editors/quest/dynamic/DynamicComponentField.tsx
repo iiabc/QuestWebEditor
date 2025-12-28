@@ -1,6 +1,6 @@
 import { ComponentField } from '@/store/useApiStore';
 import { FormScript } from '@/components/ui';
-import { Switch, Stack, TextInput, NumberInput, Group, Text, Box } from '@mantine/core';
+import { Switch, Stack, TextInput, NumberInput, Group, Text } from '@mantine/core';
 import { LocationInterpreterField } from './fields/LocationInterpreterField';
 
 interface DynamicComponentFieldProps {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Group, ActionIcon, Stack, Text, Button, TextInput, NumberInput, Select } from '@mantine/core';
+import { Group, ActionIcon, Stack, Text, Button, NumberInput, Select } from '@mantine/core';
 import { IconPlus, IconTrash, IconSettings } from '@tabler/icons-react';
 import { DebouncedTextInput } from '@/components/ui/DebouncedInput';
 

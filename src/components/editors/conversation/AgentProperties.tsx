@@ -56,13 +56,6 @@ export default function AgentProperties({ node, onChange }: AgentPropertiesProps
                 value={data.npcId || ''} 
                 onChange={(e) => updateData({ npcId: e.currentTarget.value })} 
             />
-            <TextInput 
-                label="Condition" 
-                size="xs"
-                placeholder="e.g. check player level < 10"
-                value={data.condition || ''} 
-                onChange={(e) => updateData({ condition: e.currentTarget.value })} 
-            />
         </Stack>
       </Box>
 
@@ -83,39 +76,6 @@ export default function AgentProperties({ node, onChange }: AgentPropertiesProps
             </Accordion.Panel>
         </Accordion.Item>
 
-        <Accordion.Item value="agent">
-            <Accordion.Control icon={<IconCode size={14} />}>
-                <Text size="sm" fw={500}>Agent Scripts</Text>
-            </Accordion.Control>
-            <Accordion.Panel>
-                <Stack gap="xs">
-                    <Box>
-                        <Text size="xs" fw={500}>Begin</Text>
-                        <Textarea 
-                            size="xs"
-                            autosize
-                            minRows={2}
-                            value={data.agent?.begin || ''}
-                            onChange={(e) => updateData({ agent: { ...data.agent, begin: e.currentTarget.value } })}
-                            placeholder="Script to run before conversation starts"
-                            styles={{ input: { fontFamily: 'monospace' } }}
-                        />
-                    </Box>
-                    <Box>
-                        <Text size="xs" fw={500}>End</Text>
-                        <Textarea 
-                            size="xs"
-                            autosize
-                            minRows={2}
-                            value={data.agent?.end || ''}
-                            onChange={(e) => updateData({ agent: { ...data.agent, end: e.currentTarget.value } })}
-                            placeholder="Script to run after conversation ends"
-                            styles={{ input: { fontFamily: 'monospace' } }}
-                        />
-                    </Box>
-                </Stack>
-            </Accordion.Panel>
-        </Accordion.Item>
       </Accordion>
 
       <Divider label="Player Options" labelPosition="center" />

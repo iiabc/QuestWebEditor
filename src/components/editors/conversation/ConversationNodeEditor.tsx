@@ -1,8 +1,7 @@
 import {Accordion, ActionIcon, Badge, Box, Button, Group, Modal, ScrollArea, Select, Stack, Tabs, Text, ThemeIcon, Title} from '@mantine/core';
-import {IconGitBranch, IconMessage, IconPlus, IconPuzzle, IconScript, IconSettings, IconTrash, IconUser} from '@tabler/icons-react';
+import {IconGitBranch, IconMessage, IconPlus, IconPuzzle, IconSettings, IconTrash, IconUser} from '@tabler/icons-react';
 import {AnimatedTabs, FormInput, FormScript, FormSection} from '@/components/ui';
 import {DebouncedTextarea} from '@/components/ui/DebouncedInput';
-import {AgentEditor} from '@/components/editors/quest/AgentEditor';
 import {AgentNodeData} from './nodes/AgentNode';
 import {SwitchNodeData} from './nodes/SwitchNode';
 import {useGlobalIdCheck} from './useGlobalIdCheck';
