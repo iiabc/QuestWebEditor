@@ -8,24 +8,25 @@ export type AgentNodeData = {
   npcs?: string[]; // QuestEngine format: multiple NPCs
   name?: string; // QuestEngine format: conversation name
   tags?: string[]; // QuestEngine format: tags
-  condition?: string;
   npcLines: string[]; // Also used as content in QuestEngine format
-  agent?: {
-    begin?: string;
-    end?: string;
-    refuse?: string;
-  };
   playerOptions: {
     id: string;
     text: string;
     condition?: string; // 'if' field
     actions?: string; // script before goto (action in QuestEngine format)
     next?: string; // target node ID extracted from goto (open in QuestEngine format)
+    when?: {
+      id: string;
+      condition: string;
+      actionType: 'open' | 'run';
+      actionValue: string;
+    }[];
   }[];
 };
 
 export default function AgentNode({ data, selected }: NodeProps<AgentNodeData>) {
-  const isEntry = !!data.npcId;
+  const isEntry = !!(data.npcId || (data.npcs && data.npcs.length > 0));
+  const displayNpcs = data.npcId ? [data.npcId] : (data.npcs || []);
   const { colorScheme } = useMantineColorScheme();
 
   return (
@@ -86,13 +87,13 @@ export default function AgentNode({ data, selected }: NodeProps<AgentNodeData>) 
       <Box
         bg={isEntry ? "rgba(253, 126, 20, 0.15)" : "var(--mantine-color-dark-6)"}
         p="xs"
-        h={48}
         className="conversation-node-header"
         style={{
             borderBottom: '1px solid var(--mantine-color-dark-5)',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            minHeight: 48
         }}
       >
         <Group gap="xs">
@@ -101,7 +102,16 @@ export default function AgentNode({ data, selected }: NodeProps<AgentNodeData>) 
             </ThemeIcon>
             <Stack gap={0}>
                 <Text fw={700} size="sm" className="conversation-node-title" lineClamp={1}>{data.label}</Text>
-                {isEntry && <Text size="xs" c="orange.3" style={{ lineHeight: 1, fontSize: 10 }}>入口: {data.npcId}</Text>}
+                {isEntry && displayNpcs.length > 0 && (
+                    <Stack gap={2}>
+                        <Text size="xs" c="orange.3" style={{ lineHeight: 1, fontSize: 10 }}>入口:</Text>
+                        {displayNpcs.map((npc, idx) => (
+                            <Text key={idx} size="xs" c="orange.3" style={{ lineHeight: 1.2, fontSize: 10, fontFamily: 'monospace' }}>
+                                {npc}
+                            </Text>
+                        ))}
+                    </Stack>
+                )}
             </Stack>
         </Group>
         {isEntry && <Badge size="xs" variant="light" color="orange">ENTRY</Badge>}

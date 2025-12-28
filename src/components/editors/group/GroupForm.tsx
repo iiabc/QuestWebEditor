@@ -2,7 +2,8 @@ import { Paper, Stack, Title } from '@mantine/core';
 import { useMemo } from 'react';
 import { useProjectStore } from '@/store/useProjectStore';
 import { parseYaml, toYaml } from '@/utils/yaml-utils';
-import { FormInput, FormSection, FormTextarea } from '@/components/ui';
+import { FormInput, FormSection } from '@/components/ui';
+import { QuestListEditor } from './QuestListEditor';
 
 interface GroupFormProps {
     fileId: string;
@@ -10,6 +11,7 @@ interface GroupFormProps {
 
 export default function GroupForm({ fileId }: GroupFormProps) {
     const file = useProjectStore((state) => state.groupFiles[fileId]);
+    const questFiles = useProjectStore((state) => state.questFiles);
     const updateFileContent = useProjectStore((state) => state.updateFileContent);
 
     const parsedData = useMemo(() => {
@@ -43,11 +45,7 @@ export default function GroupForm({ fileId }: GroupFormProps) {
         updateFileContent(fileId, 'group', yaml);
     };
 
-    const handleQuestListChange = (value: string) => {
-        const quests = value
-            .split('\n')
-            .map(line => line.trim())
-            .filter(line => line.length > 0);
+    const handleQuestListChange = (quests: string[]) => {
         handleUpdate({ ...groupData, quests });
     };
 
@@ -70,14 +68,13 @@ export default function GroupForm({ fileId }: GroupFormProps) {
                         value={groupData.meta?.name || ''}
                         onChange={(e) => handleUpdate({ ...groupData, meta: { name: e.target.value } })}
                     />
-                    <FormTextarea
-                        label="任务列表"
-                        description="每行一个任务 ID，例如 example1"
-                        value={(groupData.quests || []).join('\n')}
-                        onChange={(e) => handleQuestListChange(e.target.value)}
-                        autosize
-                        minRows={5}
-                    />
+                    <div>
+                        <QuestListEditor
+                            quests={groupData.quests || []}
+                            availableQuests={questFiles}
+                            onChange={handleQuestListChange}
+                        />
+                    </div>
                 </FormSection>
             </Stack>
         </Paper>

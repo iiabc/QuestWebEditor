@@ -1,6 +1,7 @@
 import { ComponentField } from '@/store/useApiStore';
 import { FormScript } from '@/components/ui';
-import { Switch, Stack, TextInput, NumberInput, Group, Text } from '@mantine/core';
+import { Switch, Stack, TextInput, NumberInput, Group, Text, Box } from '@mantine/core';
+import { LocationInterpreterField } from './fields/LocationInterpreterField';
 
 interface DynamicComponentFieldProps {
     field: ComponentField;
@@ -12,6 +13,27 @@ export function DynamicComponentField({ field, value, onChange }: DynamicCompone
     const currentValue = value ?? field.default;
 
     const renderField = () => {
+        // 标准化 pattern（支持大小写）
+        const normalizedPattern = field.pattern.toLowerCase();
+        
+        // 检查 options 中是否包含 location-interpreter 标记
+        const hasLocationInterpreterOption = field.options?.some(opt =>
+            opt === 'location-interpreter' || opt === 'location_interpreter'
+        );
+        
+        // 检查字段名是否为位置解释器字段
+        const isLocationInterpreterField = ['position', 'from', 'to'].includes(field.name);
+        
+        // 如果是位置解释器字段，使用位置解释器编辑器
+        if ((hasLocationInterpreterOption || isLocationInterpreterField) && normalizedPattern === 'string') {
+            return (
+                <LocationInterpreterField
+                    value={currentValue || ''}
+                    onChange={onChange}
+                />
+            );
+        }
+        
         // 检查 options 中是否包含 script 相关标记
         const hasScriptOption = field.options?.some(opt =>
             opt === 'kether' || opt === 'script' || opt === 'javascript'
@@ -29,9 +51,6 @@ export function DynamicComponentField({ field, value, onChange }: DynamicCompone
                 />
             );
         }
-
-        // 标准化 pattern（支持大小写）
-        const normalizedPattern = field.pattern.toLowerCase();
 
         switch (normalizedPattern) {
             case 'boolean':

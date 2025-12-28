@@ -1,6 +1,7 @@
 import {Accordion, ActionIcon, Badge, Box, Button, Group, Modal, ScrollArea, Select, Stack, Tabs, Text, ThemeIcon, Title} from '@mantine/core';
 import {IconGitBranch, IconMessage, IconPlus, IconPuzzle, IconScript, IconSettings, IconTrash, IconUser} from '@tabler/icons-react';
-import {AnimatedTabs, FormInput, FormScript, FormSection, FormTextarea} from '@/components/ui';
+import {AnimatedTabs, FormInput, FormScript, FormSection} from '@/components/ui';
+import {DebouncedTextarea} from '@/components/ui/DebouncedInput';
 import {AgentEditor} from '@/components/editors/quest/AgentEditor';
 import {AgentNodeData} from './nodes/AgentNode';
 import {SwitchNodeData} from './nodes/SwitchNode';
@@ -114,7 +115,6 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                 {value: 'basic', label: '基础设置', icon: <IconSettings size={14}/>},
                 {value: 'npc', label: 'NPC 对话', icon: <IconMessage size={14}/>},
                 {value: 'player', label: '玩家选项', icon: <IconUser size={14}/>},
-                {value: 'agent', label: '脚本代理', icon: <IconScript size={14}/>},
                 {value: 'custom', label: '自定义组件', icon: <IconPuzzle size={14}/>}
             ]}
         >
@@ -156,14 +156,13 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                         });
                                     }}
                                 />
-                                <FormTextarea
+                                <DebouncedTextarea
                                     label="NPC IDs (多个)"
                                     description="QuestEngine 格式：多个 NPC ID，每行一个（如果设置了单个 NPC ID，此项将被忽略）"
                                     placeholder="npc_1&#10;npc_2"
-                                    minRows={3}
                                     value={data.npcs ? data.npcs.join('\n') : ''}
-                                    onChange={(e) => {
-                                        const npcs = e.currentTarget.value
+                                    onChange={(val) => {
+                                        const npcs = val
                                             .split('\n')
                                             .map(line => line.trim())
                                             .filter(line => line.length > 0);
@@ -174,27 +173,27 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                             npcId: npcs.length > 0 ? undefined : data.npcId
                                         });
                                     }}
+                                    autosize
+                                    minRows={3}
+                                    maxRows={10}
+                                    debounceMs={800}
                                 />
-                                <FormTextarea
+                                <DebouncedTextarea
                                     label="标签"
                                     description="QuestEngine 格式：对话标签，每行一个"
                                     placeholder="tag1&#10;tag2"
-                                    minRows={2}
                                     value={data.tags ? data.tags.join('\n') : ''}
-                                    onChange={(e) => {
-                                        const tags = e.currentTarget.value
+                                    onChange={(val) => {
+                                        const tags = val
                                             .split('\n')
                                             .map(line => line.trim())
                                             .filter(line => line.length > 0);
                                         onUpdate({...data, tags: tags.length > 0 ? tags : undefined});
                                     }}
-                                />
-                                <FormScript
-                                    label="进入条件"
-                                    description="进入此节点所需的条件 (Kether 脚本)"
-                                    height="100px"
-                                    value={data.condition || ''}
-                                    onChange={(val) => onUpdate({...data, condition: val || ''})}
+                                    autosize
+                                    minRows={2}
+                                    maxRows={10}
+                                    debounceMs={800}
                                 />
                             </FormSection>
                         </Stack>
@@ -205,13 +204,18 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                             <FormSection>
                                 <Title order={5} mb="xs">对话内容 (Content)</Title>
                                 <Text size="xs" c="dimmed" mb="xs">QuestEngine 格式：NPC 的对话内容，每行一条</Text>
-                                <FormTextarea
-                                    minRows={5}
+                                <DebouncedTextarea
+                                    label="对话内容"
+                                    description="QuestEngine 格式：NPC 的对话内容，每行一条"
                                     value={data.npcLines?.join('\n') || ''}
-                                    onChange={(e) => {
-                                        const lines = e.currentTarget.value.split('\n');
+                                    onChange={(val) => {
+                                        const lines = val.split('\n');
                                         onUpdate({...data, npcLines: lines});
                                     }}
+                                    autosize
+                                    minRows={5}
+                                    maxRows={15}
+                                    debounceMs={800}
                                 />
                             </FormSection>
                         </Stack>
@@ -341,17 +345,6 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                         </Stack>
                     </Tabs.Panel>
 
-                    <Tabs.Panel value="agent">
-                        <FormSection>
-                            <Title order={5} mb="xs">生命周期脚本</Title>
-                            <AgentEditor
-                                data={data.agent || {}}
-                                onUpdate={(newAgent) => onUpdate({...data, agent: newAgent})}
-                                types={['begin', 'end', 'refuse']}
-                            />
-                        </FormSection>
-                    </Tabs.Panel>
-
                     <Tabs.Panel value="custom">
                         <Stack gap="md">
                             <Title order={4}>自定义节点组件</Title>
@@ -446,12 +439,40 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                 <Title order={5} mb="xs">触发条件</Title>
                                 <FormInput
                                     label="NPC ID"
-                                    description="绑定触发此对话的 NPC ID"
-                                    placeholder="e.g. adyeshach test2"
-                                    required
-                                    error={!data.npcId ? "NPC ID 是必填项" : undefined}
+                                    description="绑定触发此对话的 NPC ID (仅在入口节点需要，QuestEngine 格式)"
+                                    placeholder="e.g. npc_1"
                                     value={data.npcId || ''}
-                                    onChange={(e) => onUpdate({...data, npcId: e.currentTarget.value})}
+                                    onChange={(e) => {
+                                        const npcId = e.currentTarget.value;
+                                        onUpdate({
+                                            ...data, 
+                                            npcId: npcId || undefined,
+                                            // 如果设置了单个 NPC，清除 npcs 数组
+                                            npcs: npcId ? undefined : data.npcs
+                                        });
+                                    }}
+                                />
+                                <DebouncedTextarea
+                                    label="NPC IDs (多个)"
+                                    description="QuestEngine 格式：多个 NPC ID，每行一个（如果设置了单个 NPC ID，此项将被忽略）"
+                                    placeholder="npc_1&#10;npc_2"
+                                    value={data.npcs ? data.npcs.join('\n') : ''}
+                                    onChange={(val) => {
+                                        const npcs = val
+                                            .split('\n')
+                                            .map(line => line.trim())
+                                            .filter(line => line.length > 0);
+                                        onUpdate({
+                                            ...data,
+                                            npcs: npcs.length > 0 ? npcs : undefined,
+                                            // 如果设置了多个 NPC，清除单个 NPC ID
+                                            npcId: npcs.length > 0 ? undefined : data.npcId
+                                        });
+                                    }}
+                                    autosize
+                                    minRows={3}
+                                    maxRows={10}
+                                    debounceMs={800}
                                 />
                             </FormSection>
                         </Stack>

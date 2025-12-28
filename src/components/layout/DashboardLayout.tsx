@@ -411,9 +411,9 @@ export default function DashboardLayout() {
                         }
                     }}
                     data={[
+                        { label: '任务组', value: 'group' },
                         { label: '任务', value: 'quest' },
-                        { label: '对话', value: 'conversation' },
-                        { label: '任务组', value: 'group' }
+                        { label: '对话', value: 'conversation' }
                     ]}
                     fullWidth
                 />

@@ -190,9 +190,9 @@ export const parseConversationToFlow = (yamlContent: string) => {
                 if (branch.open) {
                     actionType = 'open';
                     actionValue = branch.open;
-                } else if (branch.run) {
+                } else if (branch.action) {
                     actionType = 'run';
-                    actionValue = branch.run;
+                    actionValue = branch.action;
                 }
 
                 return {
@@ -209,7 +209,8 @@ export const parseConversationToFlow = (yamlContent: string) => {
                 position,
                 data: {
                     label: key,
-                    npcId: section['npc id'],
+                    npcId: section.npc || (section.npcs && section.npcs.length > 0 ? section.npcs[0] : undefined),
+                    npcs: section.npcs || (section.npc ? [section.npc] : undefined),
                     branches
                 }
             });
@@ -228,7 +229,7 @@ export const parseConversationToFlow = (yamlContent: string) => {
                 }
             });
 
-        } else if (section.content || section.answer || section.npc || section.npcs || section.name || section.tags || section.player || section.agent || section.condition || section['npc id']) {
+        } else if (section.content || section.answer || section.npc || section.npcs || section.name || section.tags || section.player) {
             // Agent Node (QuestEngine format: content/answer, or QuestEngine legacy format: npc/player)
             // QuestEngine format takes priority
             const npcLines = section.content
@@ -271,8 +272,35 @@ export const parseConversationToFlow = (yamlContent: string) => {
                 // QuestEngine format: text field; QuestEngine legacy format: reply field
                 const text = opt.text || opt.reply || '...';
 
-                // 提取玩家选项的自定义字段
-                const { reply, text: textField, action, open, if: optIf, then, next: nextField, ...optCustomFields } = opt;
+                // 处理 answer 项内部的 when 字段（虽然文档未提及，但代码支持）
+                let whenBranches = undefined;
+                if (opt.when && Array.isArray(opt.when)) {
+                    whenBranches = opt.when.map((branch: any, branchIndex: number) => {
+                        let actionType: 'open' | 'run' = 'run';
+                        let actionValue = '';
+
+                        if (branch.open) {
+                            actionType = 'open';
+                            actionValue = branch.open;
+                        } else if (branch.action) {
+                            actionType = 'run';
+                            actionValue = branch.action;
+                        } else if (branch.run) {
+                            actionType = 'run';
+                            actionValue = branch.run;
+                        }
+
+                        return {
+                            id: `${key}-opt-${index}-when-${branchIndex}`,
+                            condition: branch.if || 'true',
+                            actionType,
+                            actionValue
+                        };
+                    });
+                }
+
+                // 提取玩家选项的自定义字段（排除已知字段，包括 when）
+                const { reply, text: textField, action, open, if: optIf, then, next: nextField, when: optWhen, ...optCustomFields } = opt;
 
                 return {
                     id: `${key}-opt-${index}`,
@@ -280,12 +308,13 @@ export const parseConversationToFlow = (yamlContent: string) => {
                     condition: opt.if,
                     actions: actions,  // 纯脚本内容（不包含 goto）
                     next: next,  // 使用 YAML 中的 open/next 或从 then 解析出的 next
+                    when: whenBranches,  // answer 项内部的 when 字段
                     ...optCustomFields  // 包含 dos, dosh, gscript 等自定义字段
                 };
             });
 
             // 提取节点的自定义字段（排除已知字段）
-            const { npc, npcs, content, answer, player, agent, condition, canvas, name, tags, 'npc id': npcIdField, ...nodeCustomFields } = section;
+            const { npc, npcs, content, answer, player, canvas, name, tags, 'npc id': npcIdField, ...nodeCustomFields } = section;
 
             nodes.push({
                 id: key,
@@ -299,8 +328,6 @@ export const parseConversationToFlow = (yamlContent: string) => {
                     npcs: section.npcs || (section.npc ? [section.npc] : undefined),
                     name: section.name,
                     tags: section.tags,
-                    condition: section.condition,
-                    agent: section.agent,
                     ...nodeCustomFields  // 包含 root, self, model 等自定义字段
                 }
             });
@@ -336,7 +363,7 @@ export const generateYamlFromFlow = (nodes: Node[], edges: Edge[], _options?: Co
 
     nodes.forEach(node => {
         if (node.type === 'switch') {
-            const { label, npcId, branches } = node.data as SwitchNodeData;
+            const { label, npcId, npcs, branches } = node.data as SwitchNodeData;
 
             const whenSection = branches.map(branch => {
                 const edge = edges.find(e => e.source === node.id && e.sourceHandle === branch.id);
@@ -357,7 +384,7 @@ export const generateYamlFromFlow = (nodes: Node[], edges: Edge[], _options?: Co
                 if (branch.actionType === 'open') {
                     branchObj.open = actionValue;
                 } else {
-                    branchObj.run = actionValue;
+                    branchObj.action = actionValue;
                 }
 
                 return branchObj;
@@ -368,12 +395,21 @@ export const generateYamlFromFlow = (nodes: Node[], edges: Edge[], _options?: Co
                 canvas: { x: Math.round(node.position.x), y: Math.round(node.position.y) }
             };
 
-            if (npcId) nodeObj['npc id'] = npcId;
+            // QuestEngine format: npc (single) or npcs (array)
+            if (npcs && npcs.length > 0) {
+                if (npcs.length === 1) {
+                    nodeObj.npc = npcs[0];
+                } else {
+                    nodeObj.npcs = npcs;
+                }
+            } else if (npcId) {
+                nodeObj.npc = npcId;
+            }
 
             conversationObj[label] = nodeObj;
 
         } else if (node.type === 'agent') {
-            const { label, npcLines, playerOptions, npcId, npcs, name, tags, condition, agent, ...customFields } = node.data as AgentNodeData;
+            const { label, npcLines, playerOptions, npcId, npcs, name, tags, ...customFields } = node.data as AgentNodeData;
 
             // QuestEngine format: answer array with text, action, open fields
             const answerSection = playerOptions.map(opt => {
@@ -388,6 +424,34 @@ export const generateYamlFromFlow = (nodes: Node[], edges: Edge[], _options?: Co
                 }
 
                 // QuestEngine format: action field for script, open field for next conversation
+                // 注意：如果 answer 项有 when 字段，则不会使用 action 和 open 字段（根据 Session.kt 的逻辑）
+                if (opt.when && Array.isArray(opt.when) && opt.when.length > 0) {
+                    // 处理 answer 项内部的 when 字段
+                    optObj.when = opt.when.map((branch: any) => {
+                        const branchEdge = edges.find(e => e.source === node.id && e.sourceHandle === branch.id);
+                        const branchObj: any = {};
+
+                        if (branch.condition) {
+                            branchObj.if = branch.condition;
+                        }
+
+                        if (branch.actionType === 'open') {
+                            if (branchEdge) {
+                                const targetNode = nodes.find(n => n.id === branchEdge.target);
+                                if (targetNode) {
+                                    branchObj.open = targetNode.data.label;
+                                }
+                            } else if (branch.actionValue) {
+                                branchObj.open = branch.actionValue;
+                            }
+                        } else if (branch.actionType === 'run' && branch.actionValue) {
+                            branchObj.action = branch.actionValue;
+                        }
+
+                        return branchObj;
+                    });
+                } else {
+                    // 只有在没有 when 字段时才设置 action 和 open
                 if (opt.actions) {
                     optObj.action = opt.actions;
                 }
@@ -399,10 +463,11 @@ export const generateYamlFromFlow = (nodes: Node[], edges: Edge[], _options?: Co
                     }
                 } else if (opt.next) {
                     optObj.open = opt.next;
+                    }
                 }
 
-                // 添加玩家选项的自定义字段 (when, case 等)
-                const { id, text, condition: optCond, actions, next, ...optCustomFields } = opt;
+                // 添加玩家选项的自定义字段（排除已知字段，包括 when）
+                const { id, text, condition: optCond, actions, next, when: optWhen, ...optCustomFields } = opt;
                 Object.assign(optObj, optCustomFields);
 
                 return optObj;
@@ -427,8 +492,6 @@ export const generateYamlFromFlow = (nodes: Node[], edges: Edge[], _options?: Co
 
             if (name) nodeObj.name = name;
             if (tags && tags.length > 0) nodeObj.tags = tags;
-            if (condition) nodeObj.condition = condition;
-            if (agent) nodeObj.agent = agent;
 
             // 添加节点的自定义字段 (root, self, model 等)
             Object.assign(nodeObj, customFields);

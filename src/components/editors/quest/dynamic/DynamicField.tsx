@@ -2,10 +2,15 @@ import React from 'react';
 import { ObjectiveField } from '@/store/useApiStore';
 import { Text, Box, Tooltip, useMantineColorScheme } from '@mantine/core';
 import { LocationField } from './fields/LocationField';
+import { LocationInterpreterField } from './fields/LocationInterpreterField';
 import { VectorField } from './fields/VectorField';
 import { BlockField } from './fields/BlockField';
 import { EntityField } from './fields/EntityField';
+import { EntityInterpreterField } from './fields/EntityInterpreterField';
+import { ListEntityInterpreterField } from './fields/ListEntityInterpreterField';
 import { ItemStackField } from './fields/ItemStackField';
+import { ItemInterpreterField } from './fields/ItemInterpreterField';
+import { ListItemInterpreterField } from './fields/ListItemInterpreterField';
 import { StringField } from './fields/StringField';
 import { BooleanField } from './fields/BooleanField';
 import { NumberField } from './fields/NumberField';
@@ -22,25 +27,62 @@ export const DynamicField: React.FC<DynamicFieldProps> = ({ field, value, onChan
     const { colorScheme } = useMantineColorScheme();
 
     const renderInput = () => {
+        // 位置解释器字段：position, from, to 等字段使用位置解释器编辑器
+        const isLocationInterpreterField = ['position', 'from', 'to'].includes(field.name);
+        
+        if (isLocationInterpreterField && field.pattern === 'String') {
+            return (
+                <Box p={8}>
+                    <LocationInterpreterField value={currentValue} onChange={onChange} />
+                </Box>
+            );
+        }
+        
         // QuestEngine 中，凡是 List<String> 类型都应使用多行输入框
         const isListStringPattern = field.pattern === 'List<String>';
         const isItemListField = ['material', 'item', 'weapon', 'drops', 'matrix', 'item-main', 'item-off'].includes(field.name);
         const isEntityListField = ['entity', 'entity-hook', 'entity-main', 'entity-off'].includes(field.name);
         
         if (isListStringPattern || isItemListField || isEntityListField) {
-            const placeholder = isItemListField
-                ? '每行一个物品解释器，例如：\nminecraft:stone\nminecraft:diamond'
-                : isEntityListField
-                    ? '每行一个实体解释器，例如：\nminecraft:zombie\nminecraft:skeleton'
-                    : '每行一个值，例如：\nvalue-1\nvalue-2';
-
+            // 物品解释器列表：使用专门的编辑器
+            if (isItemListField) {
+                const description = field.description
+                    ? `${field.description}（每行一个）`
+                    : '物品解释器列表，支持格式如 minecraft:stone 或 minecraft -material stone -amount 2';
+                
+                return (
+                    <Box p={8}>
+                        <ListItemInterpreterField
+                            value={value}
+                            onChange={onChange}
+                            description={description}
+                        />
+                    </Box>
+                );
+            }
+            
+            // 实体解释器列表：使用专门的编辑器
+            if (isEntityListField) {
+                const description = field.description
+                    ? `${field.description}（每行一个）`
+                    : '实体解释器列表，支持格式如 minecraft:zombie 或 minecraft -type zombie -name 录了';
+                
+                return (
+                    <Box p={8}>
+                        <ListEntityInterpreterField
+                            value={value}
+                            onChange={onChange}
+                            description={description}
+                        />
+                    </Box>
+                );
+            }
+            
+            // 其他 List<String> 类型：使用普通的多行输入框
+            const placeholder = '每行一个值，例如：\nvalue-1\nvalue-2';
             const description = field.description
                 ? `${field.description}（每行一个）`
-                : isItemListField
-                    ? '物品解释器列表，支持格式如 minecraft:stone 或 minecraft:diamond[damage=10]'
-                    : isEntityListField
-                        ? '实体解释器列表，支持格式如 minecraft:zombie 或 minecraft:skeleton[health=20]'
-                        : undefined;
+                : undefined;
 
             return (
                 <Box p={8}>
@@ -82,17 +124,17 @@ export const DynamicField: React.FC<DynamicFieldProps> = ({ field, value, onChan
                     </Box>
                 );
             case 'Entity':
-                // 如果字段名不是 'entity'，使用单个实体字段
+                // 使用实体解释器编辑器
                 return (
                     <Box p={8}>
-                        <EntityField value={currentValue} onChange={onChange} />
+                        <EntityInterpreterField value={currentValue} onChange={onChange} />
                     </Box>
                 );
             case 'ItemStack':
-                // 如果字段名不在物品列表字段中，使用单个物品字段
+                // 使用物品解释器编辑器
                 return (
                     <Box p={8}>
-                        <ItemStackField value={currentValue} onChange={onChange} />
+                        <ItemInterpreterField value={currentValue} onChange={onChange} />
                     </Box>
                 );
             default:

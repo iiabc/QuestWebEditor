@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import { Handle, Position, NodeProps, useUpdateNodeInternals } from 'reactflow';
 import { Card, Text, Stack, Box, ThemeIcon, Group, Badge, Tooltip, useMantineColorScheme } from '@mantine/core';
-import { IconGitBranch, IconAlertCircle } from '@tabler/icons-react';
+import { IconGitBranch } from '@tabler/icons-react';
 
 export type SwitchNodeData = {
   label: string;
   npcId?: string;
+  npcs?: string[]; // QuestEngine format: multiple NPCs
   branches: {
     id: string;
     condition: string;
@@ -15,7 +16,8 @@ export type SwitchNodeData = {
 };
 
 export default function SwitchNode({ id, data, selected }: NodeProps<SwitchNodeData>) {
-  const hasNpcId = !!data.npcId;
+  const hasNpc = !!(data.npcId || (data.npcs && data.npcs.length > 0));
+  const displayNpcs = data.npcId ? [data.npcId] : (data.npcs || []);
   const updateNodeInternals = useUpdateNodeInternals();
   const { colorScheme } = useMantineColorScheme();
 
@@ -71,14 +73,14 @@ export default function SwitchNode({ id, data, selected }: NodeProps<SwitchNodeD
       <Box
         bg="var(--mantine-color-violet-9)"
         p="xs"
-        h={48}
         className="conversation-node-header"
         style={{
             borderBottom: '1px solid var(--mantine-color-dark-5)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            backgroundColor: 'rgba(103, 65, 217, 0.5)'
+            backgroundColor: 'rgba(103, 65, 217, 0.5)',
+            minHeight: 48
         }}
       >
         <Group gap="xs">
@@ -87,13 +89,15 @@ export default function SwitchNode({ id, data, selected }: NodeProps<SwitchNodeD
             </ThemeIcon>
             <Stack gap={0}>
                 <Text fw={700} size="sm" className="conversation-node-title" lineClamp={1}>{data.label}</Text>
-                {hasNpcId ? (
-                    <Text size="xs" c="violet.3" style={{ lineHeight: 1, fontSize: 10 }}>NPC: {data.npcId}</Text>
-                ) : (
-                    <Group gap={4}>
-                        <IconAlertCircle size={10} color="var(--mantine-color-red-5)" />
-                        <Text size="xs" c="red.5" style={{ lineHeight: 1, fontSize: 10 }}>缺少入口配置</Text>
-                    </Group>
+                {hasNpc && displayNpcs.length > 0 && (
+                    <Stack gap={2}>
+                        <Text size="xs" c="violet.3" style={{ lineHeight: 1, fontSize: 10 }}>NPC:</Text>
+                        {displayNpcs.map((npc, idx) => (
+                            <Text key={idx} size="xs" c="violet.3" style={{ lineHeight: 1.2, fontSize: 10, fontFamily: 'monospace' }}>
+                                {npc}
+                            </Text>
+                        ))}
+                    </Stack>
                 )}
             </Stack>
         </Group>
