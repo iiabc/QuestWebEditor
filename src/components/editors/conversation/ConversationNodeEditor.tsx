@@ -94,7 +94,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
     const addBranch = () => {
         const newBranches = [
             ...(data.branches || []),
-            {id: `${data.label}-branch-${Date.now()}`, condition: 'true', actionType: 'run', actionValue: ''}
+            {id: `${data.label}-branch-${Date.now()}`, condition: 'true'}
         ];
         onUpdate({...data, branches: newBranches});
     };
@@ -256,7 +256,18 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                                 </Box>
                                             </Group>
                                         </Accordion.Control>
-                                        <Accordion.Panel>
+                                        <Accordion.Panel
+                                            onKeyDown={(e) => {
+                                                // 阻止键盘事件冒泡到 Accordion，允许编辑器正常接收键盘输入
+                                                e.stopPropagation();
+                                            }}
+                                            onKeyPress={(e) => {
+                                                e.stopPropagation();
+                                            }}
+                                            onKeyUp={(e) => {
+                                                e.stopPropagation();
+                                            }}
+                                        >
                                             <Stack gap="sm">
                                                 <FormInput
                                                     label="选项文本 (Text)"
@@ -487,9 +498,8 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                                 <Group gap="sm">
                                                     <Badge size="xs" variant="outline" color="gray">IF</Badge>
                                                     <Text fw={500} size="sm" style={{fontFamily: 'monospace'}}>{branch.condition}</Text>
-                                                    <Badge size="xs" color={branch.actionType === 'open' ? 'blue' : 'yellow'}>
-                                                        {branch.actionType === 'open' ? 'OPEN' : 'RUN'}
-                                                    </Badge>
+                                                    {branch.action && <Badge size="xs" color="yellow">SCRIPT</Badge>}
+                                                    {branch.open && <Badge size="xs" color="blue">OPEN</Badge>}
                                                 </Group>
                                                 <ActionIcon
                                                     color="red"
@@ -504,7 +514,18 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                                 </ActionIcon>
                                             </Group>
                                         </Accordion.Control>
-                                        <Accordion.Panel>
+                                        <Accordion.Panel
+                                            onKeyDown={(e) => {
+                                                // 阻止键盘事件冒泡到 Accordion，允许编辑器正常接收键盘输入
+                                                e.stopPropagation();
+                                            }}
+                                            onKeyPress={(e) => {
+                                                e.stopPropagation();
+                                            }}
+                                            onKeyUp={(e) => {
+                                                e.stopPropagation();
+                                            }}
+                                        >
                                             <Stack gap="sm">
                                                 <FormScript
                                                     label="判断条件 (if)"
@@ -512,40 +533,32 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                                     value={branch.condition || ''}
                                                     onChange={(val) => handleBranchChange(idx, 'condition', val || '')}
                                                 />
-                                                <Stack gap="xs">
-                                                    <Select
-                                                        label="动作类型"
-                                                        data={[
-                                                            {value: 'open', label: '打开对话 (Open)'},
-                                                            {value: 'run', label: '运行脚本 (Run)'}
-                                                        ]}
-                                                        value={branch.actionType}
+                                                <FormSection>
+                                                    <Title order={6} mb="xs">动作配置</Title>
+                                                    <FormScript
+                                                        label="脚本内容 (action)"
+                                                        description="可选：执行的脚本内容"
+                                                        height="100px"
+                                                        value={branch.action || ''}
                                                         onChange={(val) => {
                                                             const newBranches = [...data.branches];
-                                                            newBranches[idx] = {
-                                                                ...newBranches[idx],
-                                                                actionType: val || 'run',
-                                                                actionValue: ''
-                                                            };
+                                                            const updatedBranch = {...newBranches[idx]};
+                                                            if (val) {
+                                                                updatedBranch.action = val;
+                                                            } else {
+                                                                delete updatedBranch.action;
+                                                            }
+                                                            newBranches[idx] = updatedBranch;
                                                             onUpdate({...data, branches: newBranches});
                                                         }}
                                                     />
-                                                    {branch.actionType === 'run' ? (
-                                                        <FormScript
-                                                            label="脚本内容"
-                                                            height="100px"
-                                                            value={branch.actionValue}
-                                                            onChange={(val) => handleBranchChange(idx, 'actionValue', val || '')}
-                                                        />
-                                                    ) : (
-                                                        <Box>
-                                                            <Text size="sm" fw={500} mb={4}>目标对话</Text>
-                                                            <Text size="xs" c="dimmed" fs="italic" mt={8}>
-                                                                请在画板上连接目标节点
-                                                            </Text>
-                                                        </Box>
-                                                    )}
-                                                </Stack>
+                                                    <Box mt="xs">
+                                                        <Text size="sm" fw={500} mb={4}>打开对话 (open)</Text>
+                                                        <Text size="xs" c="dimmed" fs="italic">
+                                                            可选：请在画板上连接目标节点，或在此处输入目标对话节点ID
+                                                        </Text>
+                                                    </Box>
+                                                </FormSection>
                                             </Stack>
                                         </Accordion.Panel>
                                     </Accordion.Item>

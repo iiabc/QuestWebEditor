@@ -184,23 +184,19 @@ export const parseConversationToFlow = (yamlContent: string) => {
         // Check for Switch Node (when property)
         if (section.when && Array.isArray(section.when)) {
             const branches = section.when.map((branch: any, index: number) => {
-                let actionType: 'open' | 'run' = 'run';
-                let actionValue = '';
+                const branchData: any = {
+                    id: `${key}-branch-${index}`,
+                    condition: branch.if || 'true'
+                };
 
+                if (branch.action) {
+                    branchData.action = branch.action;
+                }
                 if (branch.open) {
-                    actionType = 'open';
-                    actionValue = branch.open;
-                } else if (branch.action) {
-                    actionType = 'run';
-                    actionValue = branch.action;
+                    branchData.open = branch.open;
                 }
 
-                return {
-                    id: `${key}-branch-${index}`,
-                    condition: branch.if || 'true',
-                    actionType,
-                    actionValue
-                };
+                return branchData;
             });
 
             nodes.push({
@@ -217,12 +213,12 @@ export const parseConversationToFlow = (yamlContent: string) => {
 
             // Parse Edges for Switch
             branches.forEach((branch: any) => {
-                if (branch.actionType === 'open') {
+                if (branch.open) {
                     edges.push({
-                        id: `e-${branch.id}-${branch.actionValue}`,
+                        id: `e-${branch.id}-${branch.open}`,
                         source: key,
                         sourceHandle: branch.id,
-                        target: branch.actionValue,
+                        target: branch.open,
                         type: 'default',
                         animated: true,
                     });
@@ -366,25 +362,28 @@ export const generateYamlFromFlow = (nodes: Node[], edges: Edge[], _options?: Co
             const { label, npcId, npcs, branches } = node.data as SwitchNodeData;
 
             const whenSection = branches.map(branch => {
-                const edge = edges.find(e => e.source === node.id && e.sourceHandle === branch.id);
-                let actionValue = branch.actionValue;
-
-                // If connected, use the connection target
-                if (branch.actionType === 'open' && edge) {
-                    const targetNode = nodes.find(n => n.id === edge.target);
-                    if (targetNode) {
-                        actionValue = targetNode.data.label;
-                    }
-                }
-
                 const branchObj: any = {
                     if: branch.condition
                 };
 
-                if (branch.actionType === 'open') {
-                    branchObj.open = actionValue;
-                } else {
-                    branchObj.action = actionValue;
+                // 支持同时存在 action 和 open
+                if (branch.action) {
+                    branchObj.action = branch.action;
+                }
+                
+                if (branch.open) {
+                    // 如果连接了边，使用连接的目标节点ID
+                    const edge = edges.find(e => e.source === node.id && e.sourceHandle === branch.id);
+                    if (edge) {
+                        const targetNode = nodes.find(n => n.id === edge.target);
+                        if (targetNode) {
+                            branchObj.open = targetNode.data.label;
+                        } else {
+                            branchObj.open = branch.open;
+                        }
+                    } else {
+                        branchObj.open = branch.open;
+                    }
                 }
 
                 return branchObj;

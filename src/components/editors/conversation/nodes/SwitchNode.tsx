@@ -10,8 +10,8 @@ export type SwitchNodeData = {
   branches: {
     id: string;
     condition: string;
-    actionType: 'open' | 'run';
-    actionValue: string;
+    action?: string; // 脚本内容
+    open?: string; // 打开的目标对话节点ID
   }[];
 };
 
@@ -132,18 +132,19 @@ export default function SwitchNode({ id, data, selected }: NodeProps<SwitchNodeD
                         </Group>
 
                         <Group gap={4} align="center">
-                            <Text size="xs" c="dimmed">
-                                {branch.actionType === 'open' ? 'Open' : 'Run'}
-                            </Text>
-                            {branch.actionType === 'run' && (
-                                <Text size="xs" c="yellow.3" lineClamp={1} style={{ maxWidth: 150 }}>
-                                    {branch.actionValue}
-                                </Text>
+                            {branch.action && (
+                                <Badge size="xs" variant="outline" color="yellow">Script</Badge>
+                            )}
+                            {branch.open && (
+                                <Badge size="xs" variant="outline" color="blue">Open</Badge>
+                            )}
+                            {!branch.action && !branch.open && (
+                                <Text size="xs" c="dimmed" fs="italic">No action</Text>
                             )}
                         </Group>
 
-                        {/* Output Handle - Only if actionType is 'open' (link) */}
-                        {branch.actionType === 'open' && (
+                        {/* Output Handle - Only if open exists (link) */}
+                        {branch.open && (
                             <>
                                 <Handle
                                     type="source"

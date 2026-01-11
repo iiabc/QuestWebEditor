@@ -5,7 +5,7 @@ import { indexedDBStorage } from '@/utils/indexedDBStorage';
 /**
  * 文件类型
  */
-export type FileType = 'quest' | 'conversation' | 'group';
+export type FileType = 'quest' | 'conversation' | 'group' | 'pool';
 
 /**
  * 虚拟文件接口
@@ -39,6 +39,8 @@ interface ProjectState {
   conversationFolders: Record<string, VirtualFolder>;   // 对话文件夹集合
   groupFiles: Record<string, VirtualFile>;              // 任务组文件集合
   groupFolders: Record<string, VirtualFolder>;          // 任务组文件夹集合
+  poolFiles: Record<string, VirtualFile>;               // 任务池文件集合
+  poolFolders: Record<string, VirtualFolder>;           // 任务池文件夹集合
   activeFileId: string | null;                          // 当前激活的文件 ID
   activeFileType: FileType | null;                      // 当前激活的文件类型
 
@@ -98,9 +100,11 @@ const autoSaveToIndexedDB = (state: ProjectState) => {
           questFiles: dataToSave.questFiles,
           conversationFiles: dataToSave.conversationFiles,
           groupFiles: dataToSave.groupFiles,
+          poolFiles: dataToSave.poolFiles,
           questFolders: dataToSave.questFolders,
           conversationFolders: dataToSave.conversationFolders,
           groupFolders: dataToSave.groupFolders,
+          poolFolders: dataToSave.poolFolders,
           activeFile: dataToSave.activeFileId
         });
         // console.log('[useProjectStore] 自动保存到 IndexedDB 成功');
@@ -134,6 +138,8 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
   conversationFolders: {},
   groupFiles: {},
   groupFolders: {},
+  poolFiles: {},
+  poolFolders: {},
   activeFileId: null,
   activeFileType: null,
 
@@ -147,7 +153,10 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
    */
   createFile: (name, type, path, initialContent = '') => {
     const state = get();
-    const files = type === 'quest' ? state.questFiles : type === 'conversation' ? state.conversationFiles : state.groupFiles;
+    const files = type === 'quest' ? state.questFiles 
+                 : type === 'conversation' ? state.conversationFiles 
+                 : type === 'group' ? state.groupFiles
+                 : state.poolFiles;
 
     // Check if file exists
     const exists = Object.values(files).some(f => f.name === name && f.path === path);
@@ -172,9 +181,15 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
               activeFileId: id,
               activeFileType: type
           };
-        } else {
+        } else if (type === 'group') {
           newState = {
               groupFiles: { ...state.groupFiles, [id]: newFile },
+              activeFileId: id,
+              activeFileType: type
+          };
+        } else {
+          newState = {
+              poolFiles: { ...state.poolFiles, [id]: newFile },
               activeFileId: id,
               activeFileType: type
           };
@@ -208,11 +223,19 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
         activeFileId: state.activeFileId === id ? null : state.activeFileId,
         activeFileType: state.activeFileId === id ? null : state.activeFileType
       };
-    } else {
+    } else if (type === 'group') {
       const newFiles = { ...state.groupFiles };
       delete newFiles[id];
       newState = {
         groupFiles: newFiles,
+        activeFileId: state.activeFileId === id ? null : state.activeFileId,
+        activeFileType: state.activeFileId === id ? null : state.activeFileType
+      };
+    } else {
+      const newFiles = { ...state.poolFiles };
+      delete newFiles[id];
+      newState = {
+        poolFiles: newFiles,
         activeFileId: state.activeFileId === id ? null : state.activeFileId,
         activeFileType: state.activeFileId === id ? null : state.activeFileType
       };
@@ -243,11 +266,18 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
           [id]: { ...state.conversationFiles[id], content }
         }
       };
-    } else {
+    } else if (type === 'group') {
       newState = {
         groupFiles: {
           ...state.groupFiles,
           [id]: { ...state.groupFiles[id], content }
+        }
+      };
+    } else {
+      newState = {
+        poolFiles: {
+          ...state.poolFiles,
+          [id]: { ...state.poolFiles[id], content }
         }
       };
     }
@@ -277,11 +307,18 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
           [id]: { ...state.conversationFiles[id], name: newName }
         }
       };
-    } else {
+    } else if (type === 'group') {
       newState = {
         groupFiles: {
           ...state.groupFiles,
           [id]: { ...state.groupFiles[id], name: newName }
+        }
+      };
+    } else {
+      newState = {
+        poolFiles: {
+          ...state.poolFiles,
+          [id]: { ...state.poolFiles[id], name: newName }
         }
       };
     }
@@ -298,7 +335,10 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
    */
   moveFile: (id, type, newPath) => {
     const state = get();
-    const files = type === 'quest' ? state.questFiles : type === 'conversation' ? state.conversationFiles : state.groupFiles;
+    const files = type === 'quest' ? state.questFiles 
+                 : type === 'conversation' ? state.conversationFiles 
+                 : type === 'group' ? state.groupFiles
+                 : state.poolFiles;
     const file = files[id];
 
     if (!file) return { success: false, message: 'File not found' };
@@ -333,11 +373,18 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
                 [id]: { ...state.conversationFiles[id], path: normalizedNewPath }
             }
         };
-      } else {
+      } else if (type === 'group') {
         newState = {
             groupFiles: {
                 ...state.groupFiles,
                 [id]: { ...state.groupFiles[id], path: normalizedNewPath }
+            }
+        };
+      } else {
+        newState = {
+            poolFiles: {
+                ...state.poolFiles,
+                [id]: { ...state.poolFiles[id], path: normalizedNewPath }
             }
         };
       }
@@ -366,9 +413,13 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
       newState = {
         conversationFolders: { ...state.conversationFolders, [id]: newFolder }
       };
-    } else {
+    } else if (type === 'group') {
       newState = {
         groupFolders: { ...state.groupFolders, [id]: newFolder }
+      };
+    } else {
+      newState = {
+        poolFolders: { ...state.poolFolders, [id]: newFolder }
       };
     }
     autoSaveToIndexedDB({ ...state, ...newState });
@@ -390,10 +441,14 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
       const newFolders = { ...state.conversationFolders };
       delete newFolders[id];
       newState = { conversationFolders: newFolders };
-    } else {
+    } else if (type === 'group') {
       const newFolders = { ...state.groupFolders };
       delete newFolders[id];
       newState = { groupFolders: newFolders };
+    } else {
+      const newFolders = { ...state.poolFolders };
+      delete newFolders[id];
+      newState = { poolFolders: newFolders };
     }
     autoSaveToIndexedDB({ ...state, ...newState });
     return newState;
@@ -411,7 +466,9 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
         ? state.questFolders
         : type === 'conversation'
         ? state.conversationFolders
-        : state.groupFolders;
+        : type === 'group'
+        ? state.groupFolders
+        : state.poolFolders;
     const folder = folders[id];
     if (!folder) return state;
 
@@ -461,7 +518,7 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
             }
         });
         newState = { conversationFiles: newFiles, conversationFolders: newFolders };
-    } else {
+    } else if (type === 'group') {
         const newFolders = { ...state.groupFolders, [id]: { ...folder, name: newName } };
         const newFiles = { ...state.groupFiles };
 
@@ -482,6 +539,27 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
             }
         });
         newState = { groupFiles: newFiles, groupFolders: newFolders };
+    } else {
+        const newFolders = { ...state.poolFolders, [id]: { ...folder, name: newName } };
+        const newFiles = { ...state.poolFiles };
+
+        Object.values(newFiles).forEach(file => {
+            if (file.path === oldPath) {
+                newFiles[file.id] = { ...file, path: newPath };
+            } else if (file.path.startsWith(oldPath + '/')) {
+                newFiles[file.id] = { ...file, path: file.path.replace(oldPath, newPath) };
+            }
+        });
+
+        Object.values(newFolders).forEach(f => {
+            if (f.id === id) return;
+            if (f.path === oldPath) {
+                newFolders[f.id] = { ...f, path: newPath };
+            } else if (f.path.startsWith(oldPath + '/')) {
+                newFolders[f.id] = { ...f, path: f.path.replace(oldPath, newPath) };
+            }
+        });
+        newState = { poolFiles: newFiles, poolFolders: newFolders };
     }
     autoSaveToIndexedDB({ ...state, ...newState });
     return newState;
@@ -593,7 +671,7 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
             });
 
             newState = { conversationFiles: newFiles, conversationFolders: newFolders };
-        } else {
+        } else if (type === 'group') {
             const newFolders = { ...state.groupFolders };
             const newFiles = { ...state.groupFiles };
 
@@ -619,6 +697,32 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
             });
 
             newState = { groupFiles: newFiles, groupFolders: newFolders };
+        } else {
+            const newFolders = { ...state.poolFolders };
+            const newFiles = { ...state.poolFiles };
+
+            if (folder) {
+                newFolders[id] = { ...folder, path: normalizedNewPath };
+            }
+
+            Object.values(newFiles).forEach(file => {
+                if (file.path === oldPath) {
+                    newFiles[file.id] = { ...file, path: newFolderPath };
+                } else if (file.path.startsWith(oldPath + '/')) {
+                    newFiles[file.id] = { ...file, path: file.path.replace(oldPath, newFolderPath) };
+                }
+            });
+
+            Object.values(newFolders).forEach(f => {
+                if (f.id === id) return;
+                if (f.path === oldPath) {
+                    newFolders[f.id] = { ...f, path: newFolderPath };
+                } else if (f.path.startsWith(oldPath + '/')) {
+                    newFolders[f.id] = { ...f, path: f.path.replace(oldPath, newFolderPath) };
+                }
+            });
+
+            newState = { poolFiles: newFiles, poolFolders: newFolders };
         }
         autoSaveToIndexedDB({ ...state, ...newState });
         return newState;
@@ -649,14 +753,17 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
     const newQuestFiles = { ...state.questFiles };
     const newConversationFiles = { ...state.conversationFiles };
     const newGroupFiles = { ...state.groupFiles };
+    const newPoolFiles = { ...state.poolFiles };
 
     newFiles.forEach(f => {
         if (f.type === 'quest') {
             newQuestFiles[f.id] = f;
         } else if (f.type === 'conversation') {
             newConversationFiles[f.id] = f;
-        } else {
+        } else if (f.type === 'group') {
             newGroupFiles[f.id] = f;
+        } else {
+            newPoolFiles[f.id] = f;
         }
     });
 
@@ -664,6 +771,7 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
       questFiles: newQuestFiles,
       conversationFiles: newConversationFiles,
       groupFiles: newGroupFiles,
+      poolFiles: newPoolFiles,
       activeFileId: newFiles.length > 0 ? newFiles[0].id : state.activeFileId,
       activeFileType: newFiles.length > 0 ? newFiles[0].type : state.activeFileType
     };
@@ -692,9 +800,11 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
         questFiles: projectData.questFiles || {},
         conversationFiles: projectData.conversationFiles || {},
         groupFiles: projectData.groupFiles || {},
+        poolFiles: projectData.poolFiles || {},
         questFolders: projectData.questFolders || {},
         conversationFolders: projectData.conversationFolders || {},
         groupFolders: projectData.groupFolders || {},
+        poolFolders: projectData.poolFolders || {},
         activeFileId: projectData.activeFile
       });
       // console.log('[useProjectStore] 初始化完成，数据已加载');

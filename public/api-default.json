@@ -100,6 +100,10 @@
 			"block interact": {
 				"condition": [
 					{
+						"name": "item",
+						"pattern": "List<String>"
+					},
+					{
 						"name": "action",
 						"pattern": "List<String>"
 					},
@@ -127,6 +131,11 @@
 					"玩家与方块交互"
 				],
 				"params": [
+					{
+						"name": "item",
+						"type": "List<String>",
+						"description": "手持物品列表"
+					},
 					{
 						"name": "action",
 						"type": "List<String>",
@@ -301,6 +310,10 @@
 			"craft item": {
 				"condition": [
 					{
+						"name": "item",
+						"pattern": "List<String>"
+					},
+					{
 						"name": "matrix",
 						"pattern": "List<String>"
 					},
@@ -320,6 +333,11 @@
 					"玩家合成物品"
 				],
 				"params": [
+					{
+						"name": "item",
+						"type": "List<String>",
+						"description": "合成结果物品列表"
+					},
 					{
 						"name": "matrix",
 						"type": "List<String>",
@@ -397,6 +415,14 @@
 			"entity interact": {
 				"condition": [
 					{
+						"name": "entity",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "item",
+						"pattern": "List<String>"
+					},
+					{
 						"name": "hand",
 						"pattern": "Boolean"
 					},
@@ -417,6 +443,16 @@
 				],
 				"params": [
 					{
+						"name": "entity",
+						"type": "List<String>",
+						"description": "交互的实体列表"
+					},
+					{
+						"name": "item",
+						"type": "List<String>",
+						"description": "手持物品列表"
+					},
+					{
 						"name": "hand",
 						"type": "Boolean",
 						"description": "是否主手"
@@ -435,6 +471,10 @@
 			},
 			"player anvil": {
 				"condition": [
+					{
+						"name": "item",
+						"pattern": "List<String>"
+					},
 					{
 						"name": "text",
 						"pattern": "List<String>"
@@ -463,6 +503,11 @@
 					"玩家使用铁砧"
 				],
 				"params": [
+					{
+						"name": "item",
+						"type": "List<String>",
+						"description": "结果物品列表"
+					},
 					{
 						"name": "text",
 						"type": "List<String>",
@@ -673,6 +718,10 @@
 			"player fish": {
 				"condition": [
 					{
+						"name": "item",
+						"pattern": "List<String>"
+					},
+					{
 						"name": "entity",
 						"pattern": "List<String>"
 					},
@@ -704,6 +753,11 @@
 					"玩家钓鱼"
 				],
 				"params": [
+					{
+						"name": "item",
+						"type": "List<String>",
+						"description": "钓到的物品列表"
+					},
 					{
 						"name": "entity",
 						"type": "List<String>",

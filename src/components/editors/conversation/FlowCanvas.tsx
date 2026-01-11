@@ -95,7 +95,7 @@ export default function FlowCanvas({ fileId }: { fileId: string }) {
         data: {
             label: id,
             branches: [
-                { id: `${id}-branch-1`, condition: 'true', actionType: 'run', actionValue: 'tell Hello' }
+                { id: `${id}-branch-1`, condition: 'true', action: 'tell Hello' }
             ]
         }
     };

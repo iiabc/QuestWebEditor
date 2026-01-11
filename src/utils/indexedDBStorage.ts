@@ -14,6 +14,8 @@ export interface ProjectData {
     questFolders: Record<string, any>;
     groupFiles: Record<string, any>;
     groupFolders: Record<string, any>;
+    poolFiles: Record<string, any>;
+    poolFolders: Record<string, any>;
     activeFile: string | null;
 }
 
@@ -153,6 +155,8 @@ class IndexedDBStorage {
                 questFolders: parsed.state?.questFolders || {},
                 groupFiles: parsed.state?.groupFiles || {},
                 groupFolders: parsed.state?.groupFolders || {},
+                poolFiles: parsed.state?.poolFiles || {},
+                poolFolders: parsed.state?.poolFolders || {},
                 activeFile: parsed.state?.activeFileId || null
             };
 

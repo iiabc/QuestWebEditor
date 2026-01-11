@@ -8,6 +8,7 @@ import { FileTree, TreeItem } from '@/components/ui';
 import QuestEditor from '@/components/editors/quest/QuestEditor';
 import ConversationEditor from '@/components/editors/conversation/ConversationEditor';
 import GroupEditor from '@/components/editors/group/GroupEditor';
+import PoolEditor from '@/components/editors/pool/PoolEditor';
 import { ApiCenterPage } from '@/components/pages/ApiCenterPage';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -15,7 +16,7 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { v4 as uuidv4 } from 'uuid';
 
-type ContentTab = 'quest' | 'conversation' | 'group';
+type ContentTab = 'quest' | 'conversation' | 'group' | 'pool';
 
 export default function DashboardLayout() {
   const [contentTab, setContentTab] = useState<ContentTab>('quest');
@@ -28,11 +29,14 @@ export default function DashboardLayout() {
   const conversationFolders = useProjectStore((state) => state.conversationFolders);
   const groupFiles = useProjectStore((state) => state.groupFiles);
   const groupFolders = useProjectStore((state) => state.groupFolders);
+  const poolFiles = useProjectStore((state) => state.poolFiles);
+  const poolFolders = useProjectStore((state) => state.poolFolders);
   const activeFileId = useProjectStore((state) => state.activeFileId);
   const tabLabelMap: Record<ContentTab, string> = {
     quest: '任务',
     conversation: '对话',
-    group: '任务组'
+    group: '任务组',
+    pool: '任务池'
   };
 
   // 方法单独订阅
@@ -50,8 +54,14 @@ export default function DashboardLayout() {
   const { colorScheme, toggleColorScheme } = useThemeStore();
 
   const effectiveTab: ContentTab = activeTab === 'api' ? contentTab : (activeTab as ContentTab);
-  const files = effectiveTab === 'quest' ? questFiles : effectiveTab === 'conversation' ? conversationFiles : groupFiles;
-  const folders = effectiveTab === 'quest' ? questFolders : effectiveTab === 'conversation' ? conversationFolders : groupFolders;
+  const files = effectiveTab === 'quest' ? questFiles 
+               : effectiveTab === 'conversation' ? conversationFiles 
+               : effectiveTab === 'group' ? groupFiles 
+               : poolFiles;
+  const folders = effectiveTab === 'quest' ? questFolders 
+                 : effectiveTab === 'conversation' ? conversationFolders 
+                 : effectiveTab === 'group' ? groupFolders 
+                 : poolFolders;
 
   const [searchQuery, setSearchQuery] = useState('');
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -228,6 +238,12 @@ export default function DashboardLayout() {
             zip.file(path, file.content);
         });
 
+        // Export Pool Files
+        Object.values(poolFiles).forEach(file => {
+            const path = file.path ? `pool/${file.path}/${file.name}` : `pool/${file.name}`;
+            zip.file(path, file.content);
+        });
+
         const content = await zip.generateAsync({ type: 'blob' });
         saveAs(content, 'questengine-project.zip');
         notifications.show({
@@ -279,6 +295,7 @@ export default function DashboardLayout() {
                     let type: FileType = 'quest';
                     if (rootFolder?.startsWith('conversation')) type = 'conversation';
                     else if (rootFolder?.startsWith('group')) type = 'group';
+                    else if (rootFolder?.startsWith('pool')) type = 'pool';
                     const path = relativePath.substring(0, relativePath.lastIndexOf('/')) || '';
                     
                     newFiles.push({
@@ -411,9 +428,10 @@ export default function DashboardLayout() {
                         }
                     }}
                     data={[
-                        { label: '任务组', value: 'group' },
                         { label: '任务', value: 'quest' },
-                        { label: '对话', value: 'conversation' }
+                        { label: '对话', value: 'conversation' },
+                        { label: '任务组', value: 'group' },
+                        { label: '任务池', value: 'pool' }
                     ]}
                     fullWidth
                 />
@@ -629,6 +647,7 @@ export default function DashboardLayout() {
                     {activeFile.type === 'quest' && <QuestEditor fileId={activeFile.id} />}
                     {activeFile.type === 'conversation' && <ConversationEditor fileId={activeFile.id} />}
                     {activeFile.type === 'group' && <GroupEditor fileId={activeFile.id} />}
+                    {activeFile.type === 'pool' && <PoolEditor fileId={activeFile.id} />}
                 </Box>
             ) : (
                 <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', flexDirection: 'column', gap: 16 }}>
