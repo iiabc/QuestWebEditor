@@ -11,3 +11,4 @@ export * from './ContextMenu';
 export * from './FileTree';
 export * from './FormSwitch';
 export * from './AnimatedTabs';
+export * from './FormTimePicker';

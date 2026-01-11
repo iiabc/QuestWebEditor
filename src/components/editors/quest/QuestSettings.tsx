@@ -86,6 +86,7 @@ export function QuestSettings({ fileId, questId, questData, onUpdate }: QuestSet
                                 addon={questData.addon}
                                 onChange={(newAddon) => onUpdate({ ...questData, addon: newAddon })}
                                 scope="quest"
+                                availableQuests={questFiles}
                             />
                         </Stack>
                     </Tabs.Panel>

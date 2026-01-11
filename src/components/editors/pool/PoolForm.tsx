@@ -2,7 +2,7 @@ import { Paper, Stack, Title, ScrollArea } from '@mantine/core';
 import { useMemo } from 'react';
 import { useProjectStore } from '@/store/useProjectStore';
 import { parseYaml, toYaml } from '@/utils/yaml-utils';
-import { FormInput, FormSection, FormSelect } from '@/components/ui';
+import { FormInput, FormSection, FormSelect, FormTimePicker } from '@/components/ui';
 import { NumberInput } from '@mantine/core';
 import { PoolQuestListEditor } from './PoolQuestListEditor';
 
@@ -93,11 +93,12 @@ export default function PoolForm({ fileId }: PoolFormProps) {
                             value={poolData.meta?.name || ''}
                             onChange={(e) => handleUpdate({ ...poolData, meta: { ...poolData.meta, name: e.target.value } })}
                         />
-                        <FormInput
+                        <FormTimePicker
                             label="重置时间"
-                            description="例如 day 06 00 或 week 1 00 00"
+                            description="任务池重置的时间周期，例如：每天 06:00、每周一 10:00、每月 1 号 20:00"
                             value={poolData.meta?.reset || ''}
-                            onChange={(e) => handleUpdate({ ...poolData, meta: { ...poolData.meta, reset: e.target.value } })}
+                            onChange={(value) => handleUpdate({ ...poolData, meta: { ...poolData.meta, reset: value } })}
+                            mode="periodic"
                         />
                         <NumberInput
                             label="选择数量"

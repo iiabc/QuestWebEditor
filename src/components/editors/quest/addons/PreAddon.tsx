@@ -1,14 +1,17 @@
 import { FormAddon, FormScript } from '@/components/ui';
 import { Stack } from '@mantine/core';
 import { DebouncedTextarea } from '@/components/ui/DebouncedInput';
+import { VirtualFile } from '@/store/useProjectStore';
+import { QuestListEditor } from './QuestListEditor';
 
 interface PreAddonProps {
     addon: any;
     onChange: (newAddon: any) => void;
     scope: 'quest' | 'objective';
+    availableQuests?: Record<string, VirtualFile>;
 }
 
-export function PreAddon({ addon, onChange, scope }: PreAddonProps) {
+export function PreAddon({ addon, onChange, scope, availableQuests = {} }: PreAddonProps) {
     const updatePre = (key: string, value: any) => {
         onChange({
             ...addon,
@@ -40,22 +43,30 @@ export function PreAddon({ addon, onChange, scope }: PreAddonProps) {
                         value={addon?.pre?.if || ''}
                         onChange={(val) => updatePre('if', val || '')}
                     />
-                    <DebouncedTextarea
-                        label="前置任务列表 (quests)"
-                        description="需要完成的任务列表，每行一个任务 ID"
-                        placeholder="quest_id_1&#10;quest_id_2"
-                        value={Array.isArray(addon?.pre?.quests) ? addon.pre.quests.join('\n') : ''}
-                        onChange={(val) => {
-                            const quests = val
-                                .split('\n')
-                                .map(line => line.trim())
-                                .filter(line => line.length > 0);
-                            updatePre('quests', quests);
-                        }}
-                        autosize
-                        minRows={3}
-                        debounceMs={800}
-                    />
+                    {availableQuests && Object.keys(availableQuests).length > 0 ? (
+                        <QuestListEditor
+                            questIds={Array.isArray(addon?.pre?.quests) ? addon.pre.quests : []}
+                            availableQuests={availableQuests}
+                            onChange={(questIds) => updatePre('quests', questIds)}
+                        />
+                    ) : (
+                        <DebouncedTextarea
+                            label="前置任务列表 (quests)"
+                            description="需要完成的任务列表，每行一个任务 ID"
+                            placeholder="quest_id_1&#10;quest_id_2"
+                            value={Array.isArray(addon?.pre?.quests) ? addon.pre.quests.join('\n') : ''}
+                            onChange={(val) => {
+                                const quests = val
+                                    .split('\n')
+                                    .map(line => line.trim())
+                                    .filter(line => line.length > 0);
+                                updatePre('quests', quests);
+                            }}
+                            autosize
+                            minRows={3}
+                            debounceMs={800}
+                        />
+                    )}
                 </Stack>
             </FormAddon>
         );
