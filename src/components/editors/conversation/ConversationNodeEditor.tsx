@@ -1,12 +1,12 @@
-import {Accordion, ActionIcon, Badge, Box, Button, Group, Modal, ScrollArea, Select, Stack, Tabs, Text, ThemeIcon, Title} from '@mantine/core';
-import {IconGitBranch, IconMessage, IconPlus, IconPuzzle, IconSettings, IconTrash, IconUser} from '@tabler/icons-react';
-import {AnimatedTabs, FormInput, FormScript, FormSection} from '@/components/ui';
-import {DebouncedTextarea} from '@/components/ui/DebouncedInput';
-import {AgentNodeData} from './nodes/AgentNode';
-import {SwitchNodeData} from './nodes/SwitchNode';
-import {useGlobalIdCheck} from './useGlobalIdCheck';
-import {useApiStore} from '@/store/useApiStore';
-import {DynamicComponentField} from '@/components/editors/quest/dynamic/DynamicComponentField';
+import { Accordion, ActionIcon, Badge, Box, Button, Group, Modal, ScrollArea, Stack, Tabs, Text, ThemeIcon, Title } from '@mantine/core';
+import { IconGitBranch, IconMessage, IconPlus, IconPuzzle, IconSettings, IconTrash, IconUser } from '@tabler/icons-react';
+import { AnimatedTabs, FormInput, FormScript, FormSection } from '@/components/ui';
+import { DebouncedTextarea } from '@/components/ui/DebouncedInput';
+import { AgentNodeData } from './nodes/AgentNode';
+import { SwitchNodeData } from './nodes/SwitchNode';
+import { useGlobalIdCheck } from './useGlobalIdCheck';
+import { useApiStore } from '@/store/useApiStore';
+import { DynamicComponentField } from '@/components/editors/quest/dynamic/DynamicComponentField';
 
 interface ConversationNodeEditorProps {
     opened: boolean;
@@ -18,9 +18,9 @@ interface ConversationNodeEditorProps {
     existingIds?: string[];
 }
 
-export function ConversationNodeEditor({opened, onClose, data, type = 'agent', onUpdate, fileId, existingIds = []}: ConversationNodeEditorProps) {
-    const {checkDuplicate} = useGlobalIdCheck(fileId);
-    const {apiData} = useApiStore();
+export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', onUpdate, fileId, existingIds = [] }: ConversationNodeEditorProps) {
+    const { checkDuplicate } = useGlobalIdCheck(fileId);
+    const { apiData } = useApiStore();
 
     // 调试信息：打印 apiData 结构
     // // console.log('[ConversationNodeEditor] apiData:', apiData);
@@ -36,7 +36,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
             // console.log(`[ConversationNodeEditor] 找到 conversation:`, plugin.conversation);
             Object.entries(plugin.conversation).forEach(([compId, compDef]) => {
                 // console.log(`[ConversationNodeEditor] 处理组件: ${compId}`, compDef);
-                const componentWithId = {id: compId, component: compDef};
+                const componentWithId = { id: compId, component: compDef };
 
                 if (compDef.scope === 'node' || compDef.scope === 'both') {
                     conversationNodeComponents.push(componentWithId);
@@ -66,58 +66,58 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
     // --- Agent Node Handlers ---
     const handleOptionChange = (idx: number, field: keyof AgentNodeData['playerOptions'][0], val: string) => {
         const newOptions = [...data.playerOptions];
-        newOptions[idx] = {...newOptions[idx], [field]: val};
-        onUpdate({...data, playerOptions: newOptions});
+        newOptions[idx] = { ...newOptions[idx], [field]: val };
+        onUpdate({ ...data, playerOptions: newOptions });
     };
 
     const addOption = () => {
         const newOptions = [
             ...data.playerOptions,
-            {id: `${data.label}-opt-${Date.now()}`, text: 'New Option'}
+            { id: `${data.label}-opt-${Date.now()}`, text: 'New Option' }
         ];
-        onUpdate({...data, playerOptions: newOptions});
+        onUpdate({ ...data, playerOptions: newOptions });
     };
 
     const removeOption = (idx: number) => {
         const newOptions = [...data.playerOptions];
         newOptions.splice(idx, 1);
-        onUpdate({...data, playerOptions: newOptions});
+        onUpdate({ ...data, playerOptions: newOptions });
     };
 
     // --- Switch Node Handlers ---
     const handleBranchChange = (idx: number, field: keyof SwitchNodeData['branches'][0], val: string) => {
         const newBranches = [...data.branches];
-        newBranches[idx] = {...newBranches[idx], [field]: val};
-        onUpdate({...data, branches: newBranches});
+        newBranches[idx] = { ...newBranches[idx], [field]: val };
+        onUpdate({ ...data, branches: newBranches });
     };
 
     const addBranch = () => {
         const newBranches = [
             ...(data.branches || []),
-            {id: `${data.label}-branch-${Date.now()}`, condition: 'true'}
+            { id: `${data.label}-branch-${Date.now()}`, condition: 'true' }
         ];
-        onUpdate({...data, branches: newBranches});
+        onUpdate({ ...data, branches: newBranches });
     };
 
     const removeBranch = (idx: number) => {
         const newBranches = [...data.branches];
         newBranches.splice(idx, 1);
-        onUpdate({...data, branches: newBranches});
+        onUpdate({ ...data, branches: newBranches });
     };
 
     const renderAgentEditor = () => (
         <AnimatedTabs
             defaultValue="basic"
             keepMounted={false}
-            style={{flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden'}}
+            style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
             tabs={[
-                {value: 'basic', label: '基础设置', icon: <IconSettings size={14}/>},
-                {value: 'npc', label: 'NPC 对话', icon: <IconMessage size={14}/>},
-                {value: 'player', label: '玩家选项', icon: <IconUser size={14}/>},
-                {value: 'custom', label: '自定义组件', icon: <IconPuzzle size={14}/>}
+                { value: 'basic', label: '基础设置', icon: <IconSettings size={14} /> },
+                { value: 'npc', label: 'NPC 对话', icon: <IconMessage size={14} /> },
+                { value: 'player', label: '玩家选项', icon: <IconUser size={14} /> },
+                { value: 'custom', label: '自定义组件', icon: <IconPuzzle size={14} /> }
             ]}
         >
-            <ScrollArea style={{flex: 1}} bg="var(--mantine-color-dark-8)">
+            <ScrollArea style={{ flex: 1 }} bg="var(--mantine-color-dark-8)">
                 <Box p="md">
                     <Tabs.Panel value="basic">
                         <Stack gap="md">
@@ -127,7 +127,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                     label="节点 ID"
                                     description="对话节点的唯一标识符"
                                     value={data.label}
-                                    onChange={(e) => onUpdate({...data, label: e.currentTarget.value})}
+                                    onChange={(e) => onUpdate({ ...data, label: e.currentTarget.value })}
                                     error={error}
                                 />
                                 <FormInput
@@ -135,7 +135,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                     description="QuestEngine 格式：对话显示名称（可选，为空时显示 NPC 名称）"
                                     placeholder="留空则显示 NPC 名称"
                                     value={data.name || ''}
-                                    onChange={(e) => onUpdate({...data, name: e.currentTarget.value || undefined})}
+                                    onChange={(e) => onUpdate({ ...data, name: e.currentTarget.value || undefined })}
                                 />
                             </FormSection>
                             <FormSection>
@@ -148,7 +148,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                     onChange={(e) => {
                                         const npcId = e.currentTarget.value;
                                         onUpdate({
-                                            ...data, 
+                                            ...data,
                                             npcId: npcId || undefined,
                                             // 如果设置了单个 NPC，清除 npcs 数组
                                             npcs: npcId ? undefined : data.npcs
@@ -187,7 +187,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                             .split('\n')
                                             .map(line => line.trim())
                                             .filter(line => line.length > 0);
-                                        onUpdate({...data, tags: tags.length > 0 ? tags : undefined});
+                                        onUpdate({ ...data, tags: tags.length > 0 ? tags : undefined });
                                     }}
                                     autosize
                                     minRows={2}
@@ -209,7 +209,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                     value={data.npcLines?.join('\n') || ''}
                                     onChange={(val) => {
                                         const lines = val.split('\n');
-                                        onUpdate({...data, npcLines: lines});
+                                        onUpdate({ ...data, npcLines: lines });
                                     }}
                                     autosize
                                     minRows={5}
@@ -252,7 +252,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--mantine-color-red-9)'}
                                                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                                                 >
-                                                    <IconTrash size={16}/>
+                                                    <IconTrash size={16} />
                                                 </Box>
                                             </Group>
                                         </Accordion.Control>
@@ -292,7 +292,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                                 />
 
                                                 {/* 渲染玩家选项自定义组件 - 使用新的 params 格式 */}
-                                                {conversationPlayerOptionComponents.map(({id: compId, component: compDef}) => (
+                                                {conversationPlayerOptionComponents.map(({ id: compId, component: compDef }) => (
                                                     <Box key={compId}>
                                                         <Text size="sm" fw={500} mb="xs" c="dimmed">
                                                             {compDef.name} ({compId})
@@ -318,14 +318,14 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                                                 })()}
                                                                 onChange={(value) => {
                                                                     const keys = param.name.split('.');
-                                                                    const newOption = {...opt};
+                                                                    const newOption = { ...opt };
                                                                     let current: any = newOption;
                                                                     for (let i = 0; i < keys.length - 1; i++) {
                                                                         const key = keys[i];
                                                                         if (!current[key]) {
                                                                             current[key] = {};
                                                                         } else {
-                                                                            current[key] = {...current[key]};
+                                                                            current[key] = { ...current[key] };
                                                                         }
                                                                         current = current[key];
                                                                     }
@@ -337,7 +337,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                                                     }
                                                                     const newOptions = [...data.playerOptions];
                                                                     newOptions[idx] = newOption;
-                                                                    onUpdate({...data, playerOptions: newOptions});
+                                                                    onUpdate({ ...data, playerOptions: newOptions });
                                                                 }}
                                                             />
                                                         ))}
@@ -349,7 +349,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                 ))}
                             </Accordion>
 
-                            <Button variant="light" leftSection={<IconPlus size={16}/>} onClick={addOption} fullWidth>
+                            <Button variant="light" leftSection={<IconPlus size={16} />} onClick={addOption} fullWidth>
                                 添加回复选项
                             </Button>
                         </Stack>
@@ -359,7 +359,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                         <Stack gap="md">
                             <Title order={4}>自定义节点组件</Title>
                             {conversationNodeComponents.length > 0 ? (
-                                conversationNodeComponents.map(({id: compId, component: compDef}) => (
+                                conversationNodeComponents.map(({ id: compId, component: compDef }) => (
                                     <FormSection key={compId}>
                                         <Title order={5} mb="xs">{compDef.name} ({compId})</Title>
                                         <Text size="xs" c="dimmed" mb="sm">{compDef.description?.join(' / ')}</Text>
@@ -385,14 +385,14 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                                     })()}
                                                     onChange={(value) => {
                                                         const keys = param.name.split('.');
-                                                        const newData = {...data};
+                                                        const newData = { ...data };
                                                         let current: any = newData;
                                                         for (let i = 0; i < keys.length - 1; i++) {
                                                             const key = keys[i];
                                                             if (!current[key]) {
                                                                 current[key] = {};
                                                             } else {
-                                                                current[key] = {...current[key]};
+                                                                current[key] = { ...current[key] };
                                                             }
                                                             current = current[key];
                                                         }
@@ -425,13 +425,13 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
         <AnimatedTabs
             defaultValue="basic"
             keepMounted={false}
-            style={{flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden'}}
+            style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
             tabs={[
-                {value: 'basic', label: '基础设置', icon: <IconSettings size={14}/>},
-                {value: 'branches', label: '分支条件', icon: <IconGitBranch size={14}/>}
+                { value: 'basic', label: '基础设置', icon: <IconSettings size={14} /> },
+                { value: 'branches', label: '分支条件', icon: <IconGitBranch size={14} /> }
             ]}
         >
-            <ScrollArea style={{flex: 1}} bg="var(--mantine-color-dark-8)">
+            <ScrollArea style={{ flex: 1 }} bg="var(--mantine-color-dark-8)">
                 <Box p="md">
                     <Tabs.Panel value="basic">
                         <Stack gap="md">
@@ -441,7 +441,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                     label="节点 ID"
                                     description="对话节点的唯一标识符"
                                     value={data.label}
-                                    onChange={(e) => onUpdate({...data, label: e.currentTarget.value})}
+                                    onChange={(e) => onUpdate({ ...data, label: e.currentTarget.value })}
                                     error={error}
                                 />
                             </FormSection>
@@ -455,7 +455,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                     onChange={(e) => {
                                         const npcId = e.currentTarget.value;
                                         onUpdate({
-                                            ...data, 
+                                            ...data,
                                             npcId: npcId || undefined,
                                             // 如果设置了单个 NPC，清除 npcs 数组
                                             npcs: npcId ? undefined : data.npcs
@@ -497,7 +497,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                             <Group justify="space-between" pr="md">
                                                 <Group gap="sm">
                                                     <Badge size="xs" variant="outline" color="gray">IF</Badge>
-                                                    <Text fw={500} size="sm" style={{fontFamily: 'monospace'}}>{branch.condition}</Text>
+                                                    <Text fw={500} size="sm" style={{ fontFamily: 'monospace' }}>{branch.condition}</Text>
                                                     {branch.action && <Badge size="xs" color="yellow">SCRIPT</Badge>}
                                                     {branch.open && <Badge size="xs" color="blue">OPEN</Badge>}
                                                 </Group>
@@ -510,7 +510,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                                         removeBranch(idx);
                                                     }}
                                                 >
-                                                    <IconTrash size={16}/>
+                                                    <IconTrash size={16} />
                                                 </ActionIcon>
                                             </Group>
                                         </Accordion.Control>
@@ -542,14 +542,14 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                                         value={branch.action || ''}
                                                         onChange={(val) => {
                                                             const newBranches = [...data.branches];
-                                                            const updatedBranch = {...newBranches[idx]};
+                                                            const updatedBranch = { ...newBranches[idx] };
                                                             if (val) {
                                                                 updatedBranch.action = val;
                                                             } else {
                                                                 delete updatedBranch.action;
                                                             }
                                                             newBranches[idx] = updatedBranch;
-                                                            onUpdate({...data, branches: newBranches});
+                                                            onUpdate({ ...data, branches: newBranches });
                                                         }}
                                                     />
                                                     <Box mt="xs">
@@ -565,7 +565,7 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
                                 ))}
                             </Accordion>
 
-                            <Button variant="light" leftSection={<IconPlus size={16}/>} onClick={addBranch} fullWidth>
+                            <Button variant="light" leftSection={<IconPlus size={16} />} onClick={addBranch} fullWidth>
                                 添加分支
                             </Button>
                         </Stack>
@@ -583,17 +583,17 @@ export function ConversationNodeEditor({opened, onClose, data, type = 'agent', o
             title={
                 <Group className='p-4'>
                     <ThemeIcon size="lg" variant="light" color={type === 'switch' ? 'violet' : 'blue'}>
-                        {type === 'switch' ? <IconGitBranch size={20}/> : <IconMessage size={20}/>}
+                        {type === 'switch' ? <IconGitBranch size={20} /> : <IconMessage size={20} />}
                     </ThemeIcon>
                     <Stack gap={0}>
                         <Text fw={700} size="sm">编辑{type === 'switch' ? '分支' : '对话'}节点</Text>
-                        <Text size="xs" c="dimmed" style={{fontFamily: 'monospace'}}>{data.label}</Text>
+                        <Text size="xs" c="dimmed" style={{ fontFamily: 'monospace' }}>{data.label}</Text>
                     </Stack>
                 </Group>
             }
             size="xl"
             padding={0}
-            styles={{body: {height: '70vh', display: 'flex', flexDirection: 'column'}}}
+            styles={{ body: { height: '70vh', display: 'flex', flexDirection: 'column' } }}
         >
             {type === 'switch' ? renderSwitchEditor() : renderAgentEditor()}
         </Modal>
