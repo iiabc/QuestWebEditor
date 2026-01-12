@@ -56,13 +56,75 @@ export default function FlowCanvas({ fileId }: { fileId: string }) {
   }, [fileId, file?.content]);
 
   const onConnect = useCallback(
-    (params: Connection) => setEdges((eds: Edge[]) => addEdge({ ...params, animated: true }, eds)),
-    [setEdges],
+    (params: Connection) => {
+      if (!params.source || !params.target || !params.sourceHandle) return;
+      
+      // Update switch node branch's open field when connecting
+      setNodes((nds) => {
+        const sourceNode = nds.find(n => n.id === params.source);
+        const targetNode = nds.find(n => n.id === params.target);
+        
+        if (sourceNode?.type === 'switch' && targetNode && params.sourceHandle) {
+          const switchData = sourceNode.data as SwitchNodeData;
+          const branchIndex = switchData.branches.findIndex(b => b.id === params.sourceHandle);
+          
+          if (branchIndex !== -1) {
+            const updatedBranches = [...switchData.branches];
+            updatedBranches[branchIndex] = {
+              ...updatedBranches[branchIndex],
+              open: targetNode.data.label
+            };
+            
+            return nds.map(n => 
+              n.id === params.source 
+                ? { ...n, data: { ...switchData, branches: updatedBranches } }
+                : n
+            );
+          }
+        }
+        
+        return nds;
+      });
+      
+      setEdges((eds: Edge[]) => addEdge({ ...params, animated: true }, eds));
+    },
+    [setEdges, setNodes],
   );
 
   const onReconnect = useCallback(
-    (oldEdge: Edge, newConnection: Connection) => setEdges((els) => reconnectEdge(oldEdge, newConnection, els)),
-    [setEdges],
+    (oldEdge: Edge, newConnection: Connection) => {
+      if (!newConnection.source || !newConnection.target || !newConnection.sourceHandle) return;
+      
+      // Update switch node branch's open field when reconnecting
+      setNodes((nds) => {
+        const sourceNode = nds.find(n => n.id === newConnection.source);
+        const targetNode = nds.find(n => n.id === newConnection.target);
+        
+        if (sourceNode?.type === 'switch' && targetNode && newConnection.sourceHandle) {
+          const switchData = sourceNode.data as SwitchNodeData;
+          const branchIndex = switchData.branches.findIndex(b => b.id === newConnection.sourceHandle);
+          
+          if (branchIndex !== -1) {
+            const updatedBranches = [...switchData.branches];
+            updatedBranches[branchIndex] = {
+              ...updatedBranches[branchIndex],
+              open: targetNode.data.label
+            };
+            
+            return nds.map(n => 
+              n.id === newConnection.source 
+                ? { ...n, data: { ...switchData, branches: updatedBranches } }
+                : n
+            );
+          }
+        }
+        
+        return nds;
+      });
+      
+      setEdges((els) => reconnectEdge(oldEdge, newConnection, els));
+    },
+    [setEdges, setNodes],
   );
 
   const handleAutoLayout = () => {
@@ -111,7 +173,7 @@ export default function FlowCanvas({ fileId }: { fileId: string }) {
         data: {
             label: id,
             branches: [
-                { id: `${id}-branch-1`, condition: 'true', action: 'tell Hello' }
+                { id: `${id}-branch-1`, condition: 'true' }
             ]
         }
     };
@@ -139,10 +201,34 @@ export default function FlowCanvas({ fileId }: { fileId: string }) {
 
   const onEdgeDoubleClick = useCallback(
     (_: React.MouseEvent, edge: Edge) => {
-      // 双击连线时删除该连线
+      // 双击连线时删除该连线，并清除 switch 节点分支的 open 字段
+      if (edge.sourceHandle) {
+        setNodes((nds) => {
+          const sourceNode = nds.find(n => n.id === edge.source);
+          if (sourceNode?.type === 'switch') {
+            const switchData = sourceNode.data as SwitchNodeData;
+            const branchIndex = switchData.branches.findIndex(b => b.id === edge.sourceHandle);
+            
+            if (branchIndex !== -1) {
+              const updatedBranches = [...switchData.branches];
+              const updatedBranch = { ...updatedBranches[branchIndex] };
+              delete updatedBranch.open;
+              updatedBranches[branchIndex] = updatedBranch;
+              
+              return nds.map(n => 
+                n.id === edge.source 
+                  ? { ...n, data: { ...switchData, branches: updatedBranches } }
+                  : n
+              );
+            }
+          }
+          return nds;
+        });
+      }
+      
       setEdges((eds) => eds.filter((e) => e.id !== edge.id));
     },
-    [setEdges]
+    [setEdges, setNodes]
   );
 
   const editingNode = nodes.find(n => n.id === editingNodeId);

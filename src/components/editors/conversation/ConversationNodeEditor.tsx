@@ -552,12 +552,24 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                                                             onUpdate({ ...data, branches: newBranches });
                                                         }}
                                                     />
-                                                    <Box mt="xs">
-                                                        <Text size="sm" fw={500} mb={4}>打开对话 (open)</Text>
-                                                        <Text size="xs" c="dimmed" fs="italic">
-                                                            可选：请在画板上连接目标节点，或在此处输入目标对话节点ID
-                                                        </Text>
-                                                    </Box>
+                                                    <FormInput
+                                                        label="打开对话 (open)"
+                                                        description="可选：请在画板上连接目标节点，或在此处输入目标对话节点ID"
+                                                        placeholder="目标对话节点ID"
+                                                        value={branch.open || ''}
+                                                        onChange={(e) => {
+                                                            const newBranches = [...data.branches];
+                                                            const updatedBranch = { ...newBranches[idx] };
+                                                            const val = e.currentTarget.value.trim();
+                                                            if (val) {
+                                                                updatedBranch.open = val;
+                                                            } else {
+                                                                delete updatedBranch.open;
+                                                            }
+                                                            newBranches[idx] = updatedBranch;
+                                                            onUpdate({ ...data, branches: newBranches });
+                                                        }}
+                                                    />
                                                 </FormSection>
                                             </Stack>
                                         </Accordion.Panel>
