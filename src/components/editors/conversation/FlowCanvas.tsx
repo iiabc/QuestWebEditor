@@ -27,17 +27,33 @@ export default function FlowCanvas({ fileId }: { fileId: string }) {
   const [settingsOpened, setSettingsOpened] = useState(false);
   const [conversationOptions, setConversationOptions] = useState<ConversationOptions>({});
 
-  // Initial load
+  // Initial load - reset when fileId or file content changes
   useEffect(() => {
-    if (file?.content) {
+    if (!file) {
+      // File not loaded yet, clear everything
+      setNodes([]);
+      setEdges([]);
+      setConversationOptions({});
+      return;
+    }
+
+    if (file.content && file.content.trim()) {
+        // File has content, parse it
         const { nodes: initialNodes, edges: initialEdges, options } = parseConversationToFlow(file.content);
         setNodes(initialNodes);
         setEdges(initialEdges);
         if (options) {
             setConversationOptions(options);
+        } else {
+            setConversationOptions({});
         }
+    } else {
+        // File is empty or has no content, clear everything
+        setNodes([]);
+        setEdges([]);
+        setConversationOptions({});
     }
-  }, [fileId]);
+  }, [fileId, file?.content]);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds: Edge[]) => addEdge({ ...params, animated: true }, eds)),
