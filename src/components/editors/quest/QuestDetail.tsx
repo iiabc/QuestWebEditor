@@ -9,12 +9,13 @@ import { PreAddon } from './addons/PreAddon';
 import { ProgressAddon } from './addons/ProgressAddon';
 
 interface QuestDetailProps {
-    taskId: number;
+    taskId: number | string;
     taskData: any;
     onUpdate: (newData: any) => void;
+    availableObjectives?: Record<string | number, any>;
 }
 
-export function QuestDetail({ taskData, onUpdate }: QuestDetailProps) {
+export function QuestDetail({ taskId, taskData, onUpdate, availableObjectives }: QuestDetailProps) {
     const { apiData, getObjective, recordUsage } = useApiStore();
 
     // QuestEngine 格式：event 字段存储事件类型
@@ -159,6 +160,8 @@ export function QuestDetail({ taskData, onUpdate }: QuestDetailProps) {
                                 addon={taskData.addon}
                                 onChange={(newAddon) => onUpdate({ ...taskData, addon: newAddon })}
                                 scope="objective"
+                                availableObjectives={availableObjectives}
+                                currentObjectiveId={taskId}
                             />
 
                             <ProgressAddon

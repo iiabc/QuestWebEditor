@@ -140,26 +140,19 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                             </FormSection>
                             <FormSection>
                                 <Title order={5} mb="xs">触发条件</Title>
-                                <FormInput
-                                    label="NPC ID"
-                                    description="绑定触发此对话的 NPC ID (仅在入口节点需要，QuestEngine 格式)"
-                                    placeholder="e.g. npc_1"
-                                    value={data.npcId || ''}
-                                    onChange={(e) => {
-                                        const npcId = e.currentTarget.value;
-                                        onUpdate({
-                                            ...data,
-                                            npcId: npcId || undefined,
-                                            // 如果设置了单个 NPC，清除 npcs 数组
-                                            npcs: npcId ? undefined : data.npcs
-                                        });
-                                    }}
-                                />
                                 <DebouncedTextarea
-                                    label="NPC IDs (多个)"
-                                    description="QuestEngine 格式：多个 NPC ID，每行一个（如果设置了单个 NPC ID，此项将被忽略）"
+                                    label="NPC 入口列表"
+                                    description="QuestEngine 格式：NPC ID，每行一个（仅在入口节点需要）"
                                     placeholder="npc_1&#10;npc_2"
-                                    value={data.npcs ? data.npcs.join('\n') : ''}
+                                    value={(() => {
+                                        if (data.npcs && data.npcs.length > 0) {
+                                            return data.npcs.join('\n');
+                                        }
+                                        if (data.npcId) {
+                                            return data.npcId;
+                                        }
+                                        return '';
+                                    })()}
                                     onChange={(val) => {
                                         const npcs = val
                                             .split('\n')
@@ -168,8 +161,8 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                                         onUpdate({
                                             ...data,
                                             npcs: npcs.length > 0 ? npcs : undefined,
-                                            // 如果设置了多个 NPC，清除单个 NPC ID
-                                            npcId: npcs.length > 0 ? undefined : data.npcId
+                                            // 如果只有一个 NPC，也设置 npcId 以保持兼容性
+                                            npcId: npcs.length === 1 ? npcs[0] : undefined
                                         });
                                     }}
                                     autosize
@@ -206,7 +199,15 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                                 <DebouncedTextarea
                                     label="对话内容"
                                     description="QuestEngine 格式：NPC 的对话内容，每行一条"
-                                    value={data.npcLines?.join('\n') || ''}
+                                    value={(() => {
+                                        if (Array.isArray(data.npcLines)) {
+                                            return data.npcLines.join('\n');
+                                        }
+                                        if (data.npcLines) {
+                                            return String(data.npcLines);
+                                        }
+                                        return '';
+                                    })()}
                                     onChange={(val) => {
                                         const lines = val.split('\n');
                                         onUpdate({ ...data, npcLines: lines });
@@ -447,26 +448,19 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                             </FormSection>
                             <FormSection>
                                 <Title order={5} mb="xs">触发条件</Title>
-                                <FormInput
-                                    label="NPC ID"
-                                    description="绑定触发此对话的 NPC ID (仅在入口节点需要，QuestEngine 格式)"
-                                    placeholder="e.g. npc_1"
-                                    value={data.npcId || ''}
-                                    onChange={(e) => {
-                                        const npcId = e.currentTarget.value;
-                                        onUpdate({
-                                            ...data,
-                                            npcId: npcId || undefined,
-                                            // 如果设置了单个 NPC，清除 npcs 数组
-                                            npcs: npcId ? undefined : data.npcs
-                                        });
-                                    }}
-                                />
                                 <DebouncedTextarea
-                                    label="NPC IDs (多个)"
-                                    description="QuestEngine 格式：多个 NPC ID，每行一个（如果设置了单个 NPC ID，此项将被忽略）"
+                                    label="NPC 入口列表"
+                                    description="QuestEngine 格式：NPC ID，每行一个（仅在入口节点需要）"
                                     placeholder="npc_1&#10;npc_2"
-                                    value={data.npcs ? data.npcs.join('\n') : ''}
+                                    value={(() => {
+                                        if (data.npcs && data.npcs.length > 0) {
+                                            return data.npcs.join('\n');
+                                        }
+                                        if (data.npcId) {
+                                            return data.npcId;
+                                        }
+                                        return '';
+                                    })()}
                                     onChange={(val) => {
                                         const npcs = val
                                             .split('\n')
@@ -475,8 +469,8 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                                         onUpdate({
                                             ...data,
                                             npcs: npcs.length > 0 ? npcs : undefined,
-                                            // 如果设置了多个 NPC，清除单个 NPC ID
-                                            npcId: npcs.length > 0 ? undefined : data.npcId
+                                            // 如果只有一个 NPC，也设置 npcId 以保持兼容性
+                                            npcId: npcs.length === 1 ? npcs[0] : undefined
                                         });
                                     }}
                                     autosize

@@ -87,13 +87,17 @@ interface DebouncedTextareaProps extends Omit<TextareaProps, 'onChange'> {
 export function DebouncedTextarea({ value, onChange, debounceMs = 800, ...props }: DebouncedTextareaProps) {
     const [localValue, setLocalValue] = useState(value || '');
     const onChangeRef = useRef(onChange);
+    const isFocusedRef = useRef(false);
 
     useEffect(() => {
         onChangeRef.current = onChange;
     }, [onChange]);
 
+    // 只在失去焦点或 value 真正变化时同步外部 value
     useEffect(() => {
-        setLocalValue(value || '');
+        if (!isFocusedRef.current) {
+            setLocalValue(value || '');
+        }
     }, [value]);
 
     useEffect(() => {
@@ -111,6 +115,14 @@ export function DebouncedTextarea({ value, onChange, debounceMs = 800, ...props 
             {...props}
             value={localValue}
             onChange={(e) => setLocalValue(e.currentTarget.value)}
+            onFocus={() => { isFocusedRef.current = true; }}
+            onBlur={() => { 
+                isFocusedRef.current = false;
+                // 失去焦点时立即保存
+                if (localValue !== value && onChangeRef.current) {
+                    onChangeRef.current(localValue);
+                }
+            }}
         />
     );
 }

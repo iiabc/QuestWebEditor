@@ -1,5 +1,5 @@
 import { Tabs, ScrollArea, Box, Stack, Title } from '@mantine/core';
-import { IconInfoCircle, IconScript, IconPuzzle } from '@tabler/icons-react';
+import { IconInfoCircle, IconScript, IconPuzzle, IconDatabase } from '@tabler/icons-react';
 import { useMemo } from 'react';
 import { FormInput, FormSection } from '@/components/ui';
 import { useProjectStore } from '@/store/useProjectStore';
@@ -8,6 +8,7 @@ import { AgentEditor } from './AgentEditor';
 import { UIAddon } from './addons/UIAddon';
 import { TimeAddon } from './addons/TimeAddon';
 import { PreAddon } from './addons/PreAddon';
+import { DataEditor } from './DataEditor';
 
 interface QuestSettingsProps {
     fileId?: string;
@@ -42,6 +43,7 @@ export function QuestSettings({ fileId, questId, questData, onUpdate }: QuestSet
                 <Tabs.Tab value="basic" leftSection={<IconInfoCircle size={14} />} className="hover:bg-white/5 transition-colors">基本信息</Tabs.Tab>
                 <Tabs.Tab value="addons" leftSection={<IconPuzzle size={14} />} className="hover:bg-white/5 transition-colors">组件配置</Tabs.Tab>
                 <Tabs.Tab value="agent" leftSection={<IconScript size={14} />} className="hover:bg-white/5 transition-colors">触发器</Tabs.Tab>
+                <Tabs.Tab value="data" leftSection={<IconDatabase size={14} />} className="hover:bg-white/5 transition-colors">数据节点</Tabs.Tab>
             </Tabs.List>
 
             <ScrollArea style={{ flex: 1 }}>
@@ -99,6 +101,26 @@ export function QuestSettings({ fileId, questId, questData, onUpdate }: QuestSet
                                 onUpdate={(newTrigger) => onUpdate({ ...questData, trigger: newTrigger })}
                                 types={['accept', 'complete', 'timeout']}
                             />
+                        </Stack>
+                    </Tabs.Panel>
+
+                    <Tabs.Panel value="data">
+                        <Stack gap="md">
+                            <FormSection>
+                                <Title order={4} mb="sm">数据节点</Title>
+                                <DataEditor
+                                    data={questData.data || {}}
+                                    onChange={(newData) => {
+                                        // 如果数据为空对象，则不设置 data 字段
+                                        if (Object.keys(newData).length === 0) {
+                                            const { data, ...rest } = questData;
+                                            onUpdate(rest);
+                                        } else {
+                                            onUpdate({ ...questData, data: newData });
+                                        }
+                                    }}
+                                />
+                            </FormSection>
                         </Stack>
                     </Tabs.Panel>
                 </Box>

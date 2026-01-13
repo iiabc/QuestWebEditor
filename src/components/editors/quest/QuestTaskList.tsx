@@ -6,30 +6,34 @@ import { FormInput, ContextMenu } from '@/components/ui';
 
 interface QuestTaskListProps {
     tasks: Record<number | string, any>;
-    activeTaskId: number | null;
-    onSelect: (id: number) => void;
+    activeTaskId: number | string | null;
+    onSelect: (id: number | string) => void;
     onAdd: () => void;
-    onDelete: (id: number) => void;
-    onDuplicate: (id: number) => void;
+    onDelete: (id: number | string) => void;
+    onDuplicate: (id: number | string) => void;
     onReorder: (result: DropResult) => void;
-    onRename: (oldId: number, newId: number) => void;
+    onRename: (oldId: number | string, newId: number | string) => void;
     width?: number;
 }
 
 export function QuestTaskList({ tasks, activeTaskId, onSelect, onAdd, onDelete, onDuplicate, onReorder, onRename, width = 250 }: QuestTaskListProps) {
-    const [editingId, setEditingId] = useState<number | null>(null);
+    const [editingId, setEditingId] = useState<number | string | null>(null);
     const [editValue, setEditValue] = useState('');
 
-    const startEditing = (id: number) => {
+    const startEditing = (id: number | string) => {
         setEditingId(id);
         setEditValue(String(id));
     };
 
     const finishEditing = () => {
         if (editingId !== null && editValue.trim()) {
-            const newId = Number(editValue);
-            if (!isNaN(newId) && newId !== editingId) {
-                onRename(editingId, newId);
+            const newId = editValue.trim();
+            // 如果新 ID 与旧 ID 不同，且新 ID 不为空，则重命名
+            if (newId !== String(editingId) && newId.length > 0) {
+                // 检查新 ID 是否已存在
+                if (!tasks[newId]) {
+                    onRename(editingId, newId);
+                }
             }
         }
         setEditingId(null);
@@ -47,9 +51,20 @@ export function QuestTaskList({ tasks, activeTaskId, onSelect, onAdd, onDelete, 
                         {(provided: DroppableProvided) => (
                             <div ref={provided.innerRef} {...provided.droppableProps}>
                                 {Object.keys(tasks)
-                                    .map(Number)
-                                    .filter(id => !isNaN(id))
-                                    .sort((a, b) => a - b)
+                                    .map((key) => {
+                                        // 尝试转换为数字，如果失败则保持字符串
+                                        const numKey = Number(key);
+                                        return isNaN(numKey) ? key : numKey;
+                                    })
+                                    .sort((a, b) => {
+                                        // 数字优先，然后按字符串排序
+                                        if (typeof a === 'number' && typeof b === 'number') {
+                                            return a - b;
+                                        }
+                                        if (typeof a === 'number') return -1;
+                                        if (typeof b === 'number') return 1;
+                                        return String(a).localeCompare(String(b));
+                                    })
                                     .map((taskId, index) => (
                                     <Draggable key={String(taskId)} draggableId={String(taskId)} index={index}>
                                         {(provided: DraggableProvided) => (

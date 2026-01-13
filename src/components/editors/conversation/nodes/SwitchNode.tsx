@@ -16,8 +16,9 @@ export type SwitchNodeData = {
 };
 
 export default function SwitchNode({ id, data, selected }: NodeProps<SwitchNodeData>) {
-  const hasNpc = !!(data.npcId || (data.npcs && data.npcs.length > 0));
-  const displayNpcs = data.npcId ? [data.npcId] : (data.npcs || []);
+  // 优先使用 npcs 数组，如果不存在则使用 npcId
+  const displayNpcs = (data.npcs && data.npcs.length > 0) ? data.npcs : (data.npcId ? [data.npcId] : []);
+  const hasNpc = displayNpcs.length > 0;
   const updateNodeInternals = useUpdateNodeInternals();
   const { colorScheme } = useMantineColorScheme();
 

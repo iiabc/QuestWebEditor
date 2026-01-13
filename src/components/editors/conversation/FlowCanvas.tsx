@@ -29,6 +29,11 @@ export default function FlowCanvas({ fileId }: { fileId: string }) {
 
   // Initial load - reset when fileId or file content changes
   useEffect(() => {
+    // 如果正在编辑节点，不重新加载文件，避免对话框意外关闭
+    if (editingNodeId) {
+      return;
+    }
+
     if (!file) {
       // File not loaded yet, clear everything
       setNodes([]);
@@ -53,7 +58,7 @@ export default function FlowCanvas({ fileId }: { fileId: string }) {
         setEdges([]);
         setConversationOptions({});
     }
-  }, [fileId, file?.content]);
+  }, [fileId, file?.content, editingNodeId]);
 
   const onConnect = useCallback(
     (params: Connection) => {
@@ -133,19 +138,24 @@ export default function FlowCanvas({ fileId }: { fileId: string }) {
     setEdges([...layouted.edges]);
   };
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     const yaml = generateYamlFromFlow(nodes, edges, conversationOptions);
     updateFileContent(fileId, 'conversation', yaml);
-  };
+  }, [nodes, edges, conversationOptions, fileId, updateFileContent]);
 
   // Auto-save
   useEffect(() => {
+      // 如果正在编辑节点，不自动保存，避免触发文件重新加载
+      if (editingNodeId) {
+          return;
+      }
+
       const timer = setTimeout(() => {
           handleSave();
       }, 1000);
 
       return () => clearTimeout(timer);
-  }, [nodes, edges]);
+  }, [nodes, edges, editingNodeId]);
 
   const handleAddNode = () => {
     const id = `node_${Date.now()}`;
@@ -240,6 +250,14 @@ export default function FlowCanvas({ fileId }: { fileId: string }) {
         .filter(n => n.id !== editingNode.id)
         .map(n => n.data.label);
   }, [nodes, editingNode]);
+
+  // 关闭编辑器时手动保存，确保编辑的内容被保存
+  const handleCloseEditor = useCallback(() => {
+    // 先保存当前编辑的内容
+    handleSave();
+    // 然后关闭对话框
+    setEditingNodeId(null);
+  }, [handleSave]);
 
   return (
     <Paper h="100%" radius={0} style={{ overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'row' }}>
@@ -420,7 +438,7 @@ export default function FlowCanvas({ fileId }: { fileId: string }) {
         {editingNode && (
             <ConversationNodeEditor
                 opened={!!editingNode}
-                onClose={() => setEditingNodeId(null)}
+                onClose={handleCloseEditor}
                 data={editingNode.data}
                 type={editingNode.type as 'agent' | 'switch'}
                 onUpdate={handleNodeUpdate}

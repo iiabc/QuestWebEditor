@@ -23,7 +23,7 @@ export default function QuestForm({ fileId }: { fileId: string }) {
   const questId = useMemo(() => Object.keys(parsedData)[0] || 'new_quest', [parsedData]);
   const questData = useMemo(() => parsedData[questId] || { meta: {}, objective: {} }, [parsedData, questId]);
   
-  const [activeTaskId, setActiveTaskId] = useState<number | null>(null);
+  const [activeTaskId, setActiveTaskId] = useState<number | string | null>(null);
   const [sidebarWidth, setSidebarWidth] = useState(250);
   const isResizing = useRef(false);
 
@@ -61,9 +61,15 @@ export default function QuestForm({ fileId }: { fileId: string }) {
 
   // Auto-select first objective if available and none selected
   useEffect(() => {
-    const objectiveIds = Object.keys(questData.objective || {}).map(Number).filter(id => !isNaN(id));
+    const objectiveIds = Object.keys(questData.objective || {});
     if (objectiveIds.length > 0 && !activeTaskId) {
-        setActiveTaskId(Math.min(...objectiveIds));
+        // 优先选择数字 ID，否则选择第一个
+        const numIds = objectiveIds.map(Number).filter(id => !isNaN(id));
+        if (numIds.length > 0) {
+            setActiveTaskId(Math.min(...numIds));
+        } else {
+            setActiveTaskId(objectiveIds[0]);
+        }
     }
   }, [questData.objective]);
 
@@ -73,13 +79,13 @@ export default function QuestForm({ fileId }: { fileId: string }) {
     updateFileContent(fileId, 'quest', newYaml);
   };
 
-  const handleTaskUpdate = (taskId: number, taskData: any) => {
+  const handleTaskUpdate = (taskId: number | string, taskData: any) => {
     const newObjectives = { ...questData.objective, [taskId]: taskData };
     handleUpdate({ ...questData, objective: newObjectives });
   };
 
-  const handleTaskRename = (oldId: number, newId: number) => {
-    if (oldId === newId) return;
+  const handleTaskRename = (oldId: number | string, newId: number | string) => {
+    if (String(oldId) === String(newId)) return;
     
     const currentObjectives = questData.objective || {};
     if (currentObjectives[newId]) {
@@ -88,11 +94,10 @@ export default function QuestForm({ fileId }: { fileId: string }) {
 
     const newObjectives: any = {};
     Object.keys(currentObjectives).forEach(key => {
-        const numKey = Number(key);
-        if (numKey === oldId) {
+        if (String(key) === String(oldId)) {
             newObjectives[newId] = currentObjectives[oldId];
         } else {
-            newObjectives[numKey] = currentObjectives[numKey];
+            newObjectives[key] = currentObjectives[key];
         }
     });
 
@@ -113,10 +118,23 @@ export default function QuestForm({ fileId }: { fileId: string }) {
     setActiveTaskId(nextId);
   };
 
-  const duplicateTask = (taskId: number) => {
+  const duplicateTask = (taskId: number | string) => {
     const currentObjectives = questData.objective || {};
-    const existingIds = Object.keys(currentObjectives).map(Number).filter(id => !isNaN(id));
-    const nextId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
+    const existingIds = Object.keys(currentObjectives);
+    // 生成新 ID：如果是数字，则使用最大数字+1；否则使用原ID_copy
+    const numIds = existingIds.map(Number).filter(id => !isNaN(id));
+    let nextId: number | string;
+    if (numIds.length > 0 && typeof taskId === 'number') {
+        nextId = Math.max(...numIds) + 1;
+    } else {
+        nextId = `${taskId}_copy`;
+        // 如果已存在，添加数字后缀
+        let counter = 1;
+        while (currentObjectives[nextId]) {
+            nextId = `${taskId}_copy${counter}`;
+            counter++;
+        }
+    }
 
     const newObjectives = { 
         ...currentObjectives, 
@@ -126,11 +144,11 @@ export default function QuestForm({ fileId }: { fileId: string }) {
     setActiveTaskId(nextId);
   };
 
-  const deleteTask = (taskId: number) => {
+  const deleteTask = (taskId: number | string) => {
     const newObjectives = { ...questData.objective };
     delete newObjectives[taskId];
     handleUpdate({ ...questData, objective: newObjectives });
-    if (activeTaskId === taskId) {
+    if (String(activeTaskId) === String(taskId)) {
         setActiveTaskId(null);
     }
   };
@@ -139,23 +157,23 @@ export default function QuestForm({ fileId }: { fileId: string }) {
     if (!result.destination) return;
     
     const currentObjectives = questData.objective || {};
-    const keys = Object.keys(currentObjectives).map(Number).filter(id => !isNaN(id)).sort((a, b) => a - b);
+    const keys = Object.keys(currentObjectives);
     const [reorderedKey] = keys.splice(result.source.index, 1);
     keys.splice(result.destination.index, 0, reorderedKey);
     
-    // 重新编号 objectives，从 1 开始
+    // 保持原有 ID，只重新排序
     const newObjectives: any = {};
-    keys.forEach((oldKey, index) => {
-        const newKey = index + 1;
-        newObjectives[newKey] = currentObjectives[oldKey];
+    keys.forEach((key) => {
+        newObjectives[key] = currentObjectives[key];
     });
     
     handleUpdate({ ...questData, objective: newObjectives });
-    // 更新选中的 ID
+    // 更新选中的 ID（保持原 ID）
     if (activeTaskId !== null) {
-        const newIndex = keys.indexOf(activeTaskId);
-        if (newIndex >= 0) {
-            setActiveTaskId(newIndex + 1);
+        const activeKey = String(activeTaskId);
+        if (keys.includes(activeKey)) {
+            // ID 保持不变，只是顺序变了
+            setActiveTaskId(activeTaskId);
         }
     }
   };
@@ -214,6 +232,7 @@ export default function QuestForm({ fileId }: { fileId: string }) {
                         taskId={activeTaskId!}
                         taskData={activeTask}
                         onUpdate={(newData) => handleTaskUpdate(activeTaskId!, newData)}
+                        availableObjectives={questData.objective || {}}
                     />
                 ) : (
                     <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

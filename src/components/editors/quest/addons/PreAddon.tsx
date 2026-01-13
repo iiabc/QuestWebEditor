@@ -3,15 +3,18 @@ import { Stack } from '@mantine/core';
 import { DebouncedTextarea } from '@/components/ui/DebouncedInput';
 import { VirtualFile } from '@/store/useProjectStore';
 import { QuestListEditor } from './QuestListEditor';
+import { ObjectiveListEditor } from './ObjectiveListEditor';
 
 interface PreAddonProps {
     addon: any;
     onChange: (newAddon: any) => void;
     scope: 'quest' | 'objective';
     availableQuests?: Record<string, VirtualFile>;
+    availableObjectives?: Record<string | number, any>;
+    currentObjectiveId?: string | number;
 }
 
-export function PreAddon({ addon, onChange, scope, availableQuests = {} }: PreAddonProps) {
+export function PreAddon({ addon, onChange, scope, availableQuests = {}, availableObjectives, currentObjectiveId }: PreAddonProps) {
     const updatePre = (key: string, value: any) => {
         onChange({
             ...addon,
@@ -94,22 +97,31 @@ export function PreAddon({ addon, onChange, scope, availableQuests = {} }: PreAd
                         value={addon?.pre?.if || ''}
                         onChange={(val) => updatePre('if', val || '')}
                     />
-                    <DebouncedTextarea
-                        label="前置目标列表 (objectives)"
-                        description="需要完成的目标列表，每行一个目标 ID（数字）"
-                        placeholder="1&#10;2"
-                        value={Array.isArray(addon?.pre?.objectives) ? addon.pre.objectives.join('\n') : ''}
-                        onChange={(val) => {
-                            const objectives = val
-                                .split('\n')
-                                .map(line => line.trim())
-                                .filter(line => line.length > 0);
-                            updatePre('objectives', objectives);
-                        }}
-                        autosize
-                        minRows={3}
-                        debounceMs={800}
-                    />
+                    {availableObjectives && Object.keys(availableObjectives).length > 0 ? (
+                        <ObjectiveListEditor
+                            objectiveIds={Array.isArray(addon?.pre?.objectives) ? addon.pre.objectives : []}
+                            availableObjectives={availableObjectives}
+                            onChange={(objectiveIds) => updatePre('objectives', objectiveIds)}
+                            currentObjectiveId={currentObjectiveId}
+                        />
+                    ) : (
+                        <DebouncedTextarea
+                            label="前置目标列表 (objectives)"
+                            description="需要完成的目标列表，每行一个目标 ID（数字）"
+                            placeholder="1&#10;2"
+                            value={Array.isArray(addon?.pre?.objectives) ? addon.pre.objectives.join('\n') : ''}
+                            onChange={(val) => {
+                                const objectives = val
+                                    .split('\n')
+                                    .map(line => line.trim())
+                                    .filter(line => line.length > 0);
+                                updatePre('objectives', objectives);
+                            }}
+                            autosize
+                            minRows={3}
+                            debounceMs={800}
+                        />
+                    )}
                 </Stack>
             </FormAddon>
         );
