@@ -1,4 +1,3 @@
-import React from 'react';
 import { MultiSelect } from '@mantine/core';
 
 /** FancyNPCs ActionTrigger：与 fn-api ActionTrigger 枚举一致 */

@@ -5,7 +5,7 @@ import { useApiCenterStore } from './store/useApiCenterStore';
 
 export default function App() {
   const loadApiData = useApiStore((state) => state.loadApiData);
-  const { sources, addSource, loadAllEnabledSources, updateSource, removeSource } = useApiCenterStore();
+  const { sources, addSource, loadAllEnabledSources, updateSource } = useApiCenterStore();
   const initializedRef = useRef(false);
   const REQUIRED_SOURCES = [
     { name: 'QuestEngine Core', url: '/api-default.json' },
