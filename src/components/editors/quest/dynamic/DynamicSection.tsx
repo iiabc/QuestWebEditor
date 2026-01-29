@@ -11,7 +11,9 @@ interface DynamicSectionProps {
 export const DynamicSection: React.FC<DynamicSectionProps> = ({ fields, data, onChange }) => {
     const handleChange = (field: string, value: any) => {
         const newData = { ...data };
-        if (value === undefined || value === '' || value === null) {
+        const isEmpty = value === undefined || value === '' || value === null ||
+            (Array.isArray(value) && value.length === 0);
+        if (isEmpty) {
             delete newData[field];
         } else {
             newData[field] = value;

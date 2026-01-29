@@ -34,22 +34,22 @@
 					{
 						"name": "material",
 						"type": "List<String>",
-						"description": "方块材质列表"
+						"description": "方块材质"
 					},
 					{
 						"name": "position",
 						"type": "String",
-						"description": "位置 (world x y z)"
+						"description": "位置"
 					},
 					{
 						"name": "exp",
 						"type": "Number",
-						"description": "掉落经验值"
+						"description": "掉落经验"
 					},
 					{
 						"name": "silk-touch",
 						"type": "Boolean",
-						"description": "是否精准采集"
+						"description": "精准采集"
 					},
 					{
 						"name": "amount",
@@ -83,12 +83,12 @@
 					{
 						"name": "material",
 						"type": "List<String>",
-						"description": "方块材质列表"
+						"description": "方块材质"
 					},
 					{
 						"name": "position",
 						"type": "String",
-						"description": "位置 (world x y z)"
+						"description": "位置"
 					},
 					{
 						"name": "amount",
@@ -134,22 +134,22 @@
 					{
 						"name": "item",
 						"type": "List<String>",
-						"description": "手持物品列表"
+						"description": "手持物品"
 					},
 					{
 						"name": "action",
 						"type": "List<String>",
-						"description": "动作列表"
+						"description": "动作"
 					},
 					{
 						"name": "hand",
 						"type": "Boolean",
-						"description": "是否主手"
+						"description": "主手"
 					},
 					{
 						"name": "face",
 						"type": "List<String>",
-						"description": "交互面列表"
+						"description": "交互面"
 					},
 					{
 						"name": "position",
@@ -165,6 +165,14 @@
 			},
 			"block ignite": {
 				"condition": [
+					{
+						"name": "material",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "material-igniting",
+						"pattern": "List<String>"
+					},
 					{
 						"name": "cause",
 						"pattern": "List<String>"
@@ -186,9 +194,19 @@
 				],
 				"params": [
 					{
+						"name": "material",
+						"type": "List<String>",
+						"description": "被点燃方块材质"
+					},
+					{
+						"name": "material-igniting",
+						"type": "List<String>",
+						"description": "点燃物方块材质"
+					},
+					{
 						"name": "cause",
 						"type": "List<String>",
-						"description": "点燃原因列表"
+						"description": "点燃原因"
 					},
 					{
 						"name": "position",
@@ -225,18 +243,18 @@
 				],
 				"name": "方块收获",
 				"description": [
-					"玩家收获方块（如浆果）"
+					"玩家收获方块"
 				],
 				"params": [
 					{
 						"name": "material",
 						"type": "List<String>",
-						"description": "方块材质列表"
+						"description": "方块材质"
 					},
 					{
 						"name": "item",
 						"type": "List<String>",
-						"description": "掉落物品列表"
+						"description": "掉落物品"
 					},
 					{
 						"name": "position",
@@ -283,17 +301,17 @@
 					{
 						"name": "material",
 						"type": "List<String>",
-						"description": "方块材质列表"
+						"description": "方块材质"
 					},
 					{
 						"name": "hand",
 						"type": "Boolean",
-						"description": "是否主手"
+						"description": "主手"
 					},
 					{
 						"name": "item",
 						"type": "List<String>",
-						"description": "工具物品列表"
+						"description": "工具"
 					},
 					{
 						"name": "position",
@@ -336,12 +354,12 @@
 					{
 						"name": "item",
 						"type": "List<String>",
-						"description": "合成结果物品列表"
+						"description": "合成结果"
 					},
 					{
 						"name": "matrix",
 						"type": "List<String>",
-						"description": "合成配方物品列表"
+						"description": "配方"
 					},
 					{
 						"name": "position",
@@ -388,17 +406,17 @@
 					{
 						"name": "item",
 						"type": "List<String>",
-						"description": "物品列表"
+						"description": "物品"
 					},
 					{
 						"name": "cost",
 						"type": "Number",
-						"description": "附魔消耗等级"
+						"description": "附魔消耗"
 					},
 					{
 						"name": "type",
 						"type": "List<String>",
-						"description": "附魔类型列表"
+						"description": "附魔类型"
 					},
 					{
 						"name": "position",
@@ -445,17 +463,17 @@
 					{
 						"name": "entity",
 						"type": "List<String>",
-						"description": "交互的实体列表"
+						"description": "实体"
 					},
 					{
 						"name": "item",
 						"type": "List<String>",
-						"description": "手持物品列表"
+						"description": "手持物品"
 					},
 					{
 						"name": "hand",
 						"type": "Boolean",
-						"description": "是否主手"
+						"description": "主手"
 					},
 					{
 						"name": "position",
@@ -506,22 +524,22 @@
 					{
 						"name": "item",
 						"type": "List<String>",
-						"description": "结果物品列表"
+						"description": "结果物品"
 					},
 					{
 						"name": "text",
 						"type": "List<String>",
-						"description": "重命名文本列表"
+						"description": "重命名文本"
 					},
 					{
 						"name": "cost",
 						"type": "Number",
-						"description": "花费经验等级"
+						"description": "铁砧消耗"
 					},
 					{
 						"name": "matrix",
 						"type": "List<String>",
-						"description": "配方物品列表"
+						"description": "配方"
 					},
 					{
 						"name": "position",
@@ -560,7 +578,7 @@
 					{
 						"name": "content",
 						"type": "List<String>",
-						"description": "聊天内容列表"
+						"description": "聊天内容"
 					},
 					{
 						"name": "position",
@@ -599,7 +617,7 @@
 					{
 						"name": "command",
 						"type": "List<String>",
-						"description": "命令列表"
+						"description": "命令"
 					},
 					{
 						"name": "position",
@@ -666,17 +684,17 @@
 					{
 						"name": "cause",
 						"type": "List<String>",
-						"description": "死亡原因列表"
+						"description": "死亡原因"
 					},
 					{
 						"name": "exp",
 						"type": "Number",
-						"description": "掉落经验值"
+						"description": "掉落经验"
 					},
 					{
 						"name": "damage",
 						"type": "Number",
-						"description": "受到伤害"
+						"description": "伤害"
 					},
 					{
 						"name": "damage-final",
@@ -686,22 +704,22 @@
 					{
 						"name": "drops",
 						"type": "List<String>",
-						"description": "掉落物品列表"
+						"description": "掉落物品"
 					},
 					{
 						"name": "attacker",
 						"type": "List<String>",
-						"description": "攻击者列表"
+						"description": "攻击者"
 					},
 					{
 						"name": "weapon",
 						"type": "List<String>",
-						"description": "武器列表"
+						"description": "武器"
 					},
 					{
 						"name": "message",
 						"type": "List<String>",
-						"description": "死亡消息列表"
+						"description": "死亡消息"
 					},
 					{
 						"name": "position",
@@ -756,27 +774,27 @@
 					{
 						"name": "item",
 						"type": "List<String>",
-						"description": "钓到的物品列表"
+						"description": "钓到物品"
 					},
 					{
 						"name": "entity",
 						"type": "List<String>",
-						"description": "钓到的实体列表"
+						"description": "钓到实体"
 					},
 					{
 						"name": "entity-hook",
 						"type": "List<String>",
-						"description": "鱼钩实体列表"
+						"description": "鱼钩实体"
 					},
 					{
 						"name": "state",
 						"type": "List<String>",
-						"description": "钓鱼状态列表"
+						"description": "钓鱼状态"
 					},
 					{
 						"name": "exp",
 						"type": "Number",
-						"description": "经验值"
+						"description": "经验"
 					},
 					{
 						"name": "position",
@@ -790,11 +808,15 @@
 					}
 				]
 			},
-			"player inventory": {
+			"player collect": {
 				"condition": [
 					{
 						"name": "item",
 						"pattern": "String"
+					},
+					{
+						"name": "consume",
+						"pattern": "Boolean"
 					},
 					{
 						"name": "position",
@@ -809,13 +831,84 @@
 				],
 				"name": "背包物品检测",
 				"description": [
-					"玩家背包中拥有特定物品"
+					"背包拥有或收取物品"
 				],
 				"params": [
 					{
 						"name": "item",
 						"type": "String",
-						"description": "物品 (String/Inline)"
+						"description": "物品"
+					},
+					{
+						"name": "consume",
+						"type": "Boolean",
+						"description": "达成时消耗"
+					},
+					{
+						"name": "position",
+						"type": "String",
+						"description": "位置"
+					},
+					{
+						"name": "amount",
+						"type": "Number",
+						"description": "数量"
+					}
+				]
+			},
+			"player equipment": {
+				"condition": [
+					{
+						"name": "item",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "slots",
+						"pattern": "List<String>"
+					},
+					{
+						"name": "required",
+						"pattern": "Number"
+					},
+					{
+						"name": "consume",
+						"pattern": "Boolean"
+					},
+					{
+						"name": "position",
+						"pattern": "String"
+					}
+				],
+				"goal": [
+					{
+						"name": "amount",
+						"pattern": "Number"
+					}
+				],
+				"name": "玩家装备检测",
+				"description": [
+					"玩家装备检测"
+				],
+				"params": [
+					{
+						"name": "item",
+						"type": "List<String>",
+						"description": "物品"
+					},
+					{
+						"name": "slots",
+						"type": "List<String>",
+						"description": "装备槽位"
+					},
+					{
+						"name": "required",
+						"type": "Number",
+						"description": "最少匹配数"
+					},
+					{
+						"name": "consume",
+						"type": "Boolean",
+						"description": "匹配后消耗"
 					},
 					{
 						"name": "position",
@@ -878,22 +971,22 @@
 					{
 						"name": "entity",
 						"type": "List<String>",
-						"description": "被击杀实体列表"
+						"description": "实体"
 					},
 					{
 						"name": "weapon",
 						"type": "List<String>",
-						"description": "武器列表"
+						"description": "武器"
 					},
 					{
 						"name": "cause",
 						"type": "List<String>",
-						"description": "伤害原因列表"
+						"description": "伤害原因"
 					},
 					{
 						"name": "damage",
 						"type": "Number",
-						"description": "造成伤害"
+						"description": "伤害"
 					},
 					{
 						"name": "damage-final",
@@ -908,7 +1001,7 @@
 					{
 						"name": "drops",
 						"type": "List<String>",
-						"description": "掉落物品列表"
+						"description": "掉落物品"
 					},
 					{
 						"name": "position",
@@ -955,22 +1048,22 @@
 					{
 						"name": "from",
 						"type": "String",
-						"description": "来源位置"
+						"description": "来源"
 					},
 					{
 						"name": "to",
 						"type": "String",
-						"description": "目标位置"
+						"description": "目标"
 					},
 					{
 						"name": "biome",
 						"type": "List<String>",
-						"description": "生物群系列表"
+						"description": "生物群系"
 					},
 					{
 						"name": "position",
 						"type": "String",
-						"description": "当前位置"
+						"description": "位置"
 					},
 					{
 						"name": "amount",
@@ -1008,12 +1101,12 @@
 					{
 						"name": "item-main",
 						"type": "List<String>",
-						"description": "主手物品列表"
+						"description": "主手物品"
 					},
 					{
 						"name": "item-off",
 						"type": "List<String>",
-						"description": "副手物品列表"
+						"description": "副手物品"
 					},
 					{
 						"name": "position",
@@ -1056,12 +1149,12 @@
 					{
 						"name": "material",
 						"type": "List<String>",
-						"description": "物品材质列表"
+						"description": "物品材质"
 					},
 					{
 						"name": "exp",
 						"type": "Number",
-						"description": "经验值"
+						"description": "经验"
 					},
 					{
 						"name": "position",
@@ -1090,13 +1183,13 @@
 				],
 				"name": "Kether 脚本",
 				"description": [
-					"执行 Kether 脚本 (同步)"
+					"Kether 脚本（同步）"
 				],
 				"params": [
 					{
 						"name": "value",
 						"type": "String",
-						"description": "脚本内容 (返回 boolean)"
+						"description": "脚本"
 					},
 					{
 						"name": "amount",
@@ -1120,13 +1213,13 @@
 				],
 				"name": "Async Kether 脚本",
 				"description": [
-					"执行 Kether 脚本 (异步)"
+					"Kether 脚本（异步）"
 				],
 				"params": [
 					{
 						"name": "value",
 						"type": "String",
-						"description": "脚本内容 (返回 boolean)"
+						"description": "脚本"
 					},
 					{
 						"name": "amount",
@@ -1160,7 +1253,7 @@
 					{
 						"name": "talk",
 						"type": "String",
-						"description": "对话ID"
+						"description": "对话"
 					},
 					{
 						"name": "position",

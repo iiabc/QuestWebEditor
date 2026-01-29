@@ -83,26 +83,26 @@ export default function PoolForm({ fileId }: PoolFormProps) {
                     <FormSection>
                         <FormInput
                             label="任务池 ID"
-                            description="例如 daily_mining 或 weekly_reward"
+                            description=""
                             value={poolId}
                             onChange={(e) => handleUpdate(poolData, e.target.value.trim() || 'new_pool')}
                         />
                         <FormInput
                             label="显示名称"
-                            description="任务池展示名称"
+                            description=""
                             value={poolData.meta?.name || ''}
                             onChange={(e) => handleUpdate({ ...poolData, meta: { ...poolData.meta, name: e.target.value } })}
                         />
                         <FormTimePicker
                             label="重置时间"
-                            description="任务池重置的时间周期，例如：每天 06:00、每周一 10:00、每月 1 号 20:00"
+                            description=""
                             value={poolData.meta?.reset || ''}
                             onChange={(value) => handleUpdate({ ...poolData, meta: { ...poolData.meta, reset: value } })}
                             mode="periodic"
                         />
                         <NumberInput
                             label="选择数量"
-                            description="从任务池中选择的任务数量，0 表示选择所有任务"
+                            description=""
                             value={poolData.rules?.pick || 0}
                             onChange={(value) => handleUpdate({ 
                                 ...poolData, 

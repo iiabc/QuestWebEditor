@@ -13,6 +13,7 @@ import { StringField } from './fields/StringField';
 import { BooleanField } from './fields/BooleanField';
 import { NumberField } from './fields/NumberField';
 import { ListStringField } from './fields/ListStringField';
+import { InteractionTypeField } from './fields/InteractionTypeField';
 
 interface DynamicFieldProps {
     field: ObjectiveField;
@@ -35,60 +36,69 @@ export const DynamicField: React.FC<DynamicFieldProps> = ({ field, value, onChan
                 </Box>
             );
         }
+
+        // 背包物品检测等：item 为 String 时也使用物品解释器编辑器（含 Minecraft/ItemsAdder/MMOItems/SmcCore 等选项）
+        if (field.name === 'item' && field.pattern === 'String') {
+            return (
+                <Box p={8}>
+                    <ItemInterpreterField value={currentValue} onChange={onChange} />
+                </Box>
+            );
+        }
         
-        // QuestEngine 中，凡是 List<String> 类型都应使用多行输入框
         const isListStringPattern = field.pattern === 'List<String>';
-        const isItemListField = ['material', 'item', 'weapon', 'drops', 'matrix', 'item-main', 'item-off'].includes(field.name);
+        const isItemListField = ['item', 'weapon', 'drops', 'matrix', 'item-main', 'item-off'].includes(field.name);
         const isEntityListField = ['entity', 'entity-hook', 'entity-main', 'entity-off'].includes(field.name);
-        
-        if (isListStringPattern || isItemListField || isEntityListField) {
-            // 物品解释器列表：使用专门的编辑器
+        const isBlockMaterialField = ['material', 'material-igniting'].includes(field.name);
+
+        if (field.name === 'interaction-type' && field.pattern === 'List<String>') {
+            return (
+                <Box p={8}>
+                    <InteractionTypeField value={value} onChange={onChange} />
+                </Box>
+            );
+        }
+
+        if (isListStringPattern || isItemListField || isEntityListField || isBlockMaterialField) {
+            if (isBlockMaterialField) {
+                return (
+                    <Box p={8}>
+                        <ListStringField
+                            value={value}
+                            onChange={onChange}
+                            description={field.description}
+                        />
+                    </Box>
+                );
+            }
             if (isItemListField) {
-                const description = field.description
-                    ? `${field.description}（每行一个）`
-                    : '物品解释器列表，支持格式如 minecraft:stone 或 minecraft -material stone -amount 2';
-                
                 return (
                     <Box p={8}>
                         <ListItemInterpreterField
                             value={value}
                             onChange={onChange}
-                            description={description}
+                            description={field.description}
                         />
                     </Box>
                 );
             }
-            
-            // 实体解释器列表：使用专门的编辑器
             if (isEntityListField) {
-                const description = field.description
-                    ? `${field.description}（每行一个）`
-                    : '实体解释器列表，支持格式如 minecraft:zombie 或 minecraft -type zombie -name 录了';
-                
                 return (
                     <Box p={8}>
                         <ListEntityInterpreterField
                             value={value}
                             onChange={onChange}
-                            description={description}
+                            description={field.description}
                         />
                     </Box>
                 );
             }
-            
-            // 其他 List<String> 类型：使用普通的多行输入框
-            const placeholder = '每行一个值，例如：\nvalue-1\nvalue-2';
-            const description = field.description
-                ? `${field.description}（每行一个）`
-                : undefined;
-
             return (
                 <Box p={8}>
-                    <ListStringField 
-                        value={value} 
+                    <ListStringField
+                        value={value}
                         onChange={onChange}
-                        placeholder={placeholder}
-                        description={description}
+                        description={field.description}
                     />
                 </Box>
             );

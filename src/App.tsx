@@ -12,8 +12,7 @@ export default function App() {
     { name: 'MythicMobs', url: '/api-MythicMobs.json' },
     { name: 'Adyeshach', url: '/api-Adyeshach.json' },
     { name: 'Citizens', url: '/api-Citizens.json' },
-    { name: 'Rhea', url: '/api-Rhea.json' },
-    { name: 'CustomGo', url: '/api-CustomGo.json' }
+    { name: 'FancyNPCs', url: '/api-FancyNPCs.json' }
   ];
 
   useEffect(() => {
@@ -26,9 +25,6 @@ export default function App() {
       if (source.url === '/api-default.json' && source.name !== 'QuestEngine Core') {
         updateSource(source.id, { name: 'QuestEngine Core', url: '/api-default.json' });
       }
-      if (source.name === 'PlaceholderAPI') {
-        removeSource(source.id);
-      }
     });
 
     // 确保必须的源都存在
@@ -37,12 +33,12 @@ export default function App() {
         (source) => source.name === required.name || source.url === required.url
       );
       if (!exists) {
-      addSource({
+        addSource({
           name: required.name,
           url: required.url,
-        enabled: true
-      });
-    }
+          enabled: true
+        });
+      }
     });
 
     // 延迟一下，确保源添加完成后再加载

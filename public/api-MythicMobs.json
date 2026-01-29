@@ -1,7 +1,7 @@
 {
     "MythicMobs": {
         "objective": {
-            "mm kill": {
+            "mythicmobs kill": {
                 "condition": [
                     {
                         "name": "id",
@@ -42,12 +42,12 @@
                     {
                         "name": "id",
                         "type": "List<String>",
-                        "description": "怪物 ID 列表"
+                        "description": "怪物 ID"
                     },
                     {
                         "name": "type",
                         "type": "List<String>",
-                        "description": "怪物类型列表"
+                        "description": "怪物类型"
                     },
                     {
                         "name": "level",
@@ -62,7 +62,7 @@
                     {
                         "name": "weapon",
                         "type": "List<String>",
-                        "description": "武器列表"
+                        "description": "武器"
                     },
                     {
                         "name": "position",

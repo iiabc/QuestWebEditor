@@ -1,7 +1,7 @@
 {
     "Adyeshach": {
         "objective": {
-            "adyeshach interact": {
+            "anpc interact": {
                 "condition": [
                     {
                         "name": "id",
@@ -42,27 +42,27 @@
                     {
                         "name": "id",
                         "type": "List<String>",
-                        "description": "NPC ID 列表"
+                        "description": "NPC ID"
                     },
                     {
                         "name": "type",
                         "type": "List<String>",
-                        "description": "NPC 类型列表"
+                        "description": "NPC 类型"
                     },
                     {
                         "name": "item-main",
                         "type": "List<String>",
-                        "description": "主手物品列表"
+                        "description": "主手物品"
                     },
                     {
                         "name": "item-off",
                         "type": "List<String>",
-                        "description": "副手物品列表"
+                        "description": "副手物品"
                     },
                     {
                         "name": "hand",
                         "type": "Boolean",
-                        "description": "是否主手"
+                        "description": "主手"
                     },
                     {
                         "name": "position",
@@ -76,7 +76,7 @@
                     }
                 ]
             },
-            "adyeshach damage": {
+            "anpc damage": {
                 "condition": [
                     {
                         "name": "id",
@@ -113,22 +113,22 @@
                     {
                         "name": "id",
                         "type": "List<String>",
-                        "description": "NPC ID 列表"
+                        "description": "NPC ID"
                     },
                     {
                         "name": "type",
                         "type": "List<String>",
-                        "description": "NPC 类型列表"
+                        "description": "NPC 类型"
                     },
                     {
                         "name": "item-main",
                         "type": "List<String>",
-                        "description": "主手物品列表"
+                        "description": "主手物品"
                     },
                     {
                         "name": "item-off",
                         "type": "List<String>",
-                        "description": "副手物品列表"
+                        "description": "副手物品"
                     },
                     {
                         "name": "position",

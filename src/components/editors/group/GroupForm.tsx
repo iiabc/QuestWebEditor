@@ -58,13 +58,13 @@ export default function GroupForm({ fileId }: GroupFormProps) {
                 <FormSection>
                     <FormInput
                         label="任务组 ID"
-                        description="例如 main_story 或 daily_reward"
+                        description=""
                         value={groupId}
                         onChange={(e) => handleUpdate(groupData, e.target.value.trim() || 'new_group')}
                     />
                     <FormInput
                         label="显示名称"
-                        description="任务组展示名称"
+                        description=""
                         value={groupData.meta?.name || ''}
                         onChange={(e) => handleUpdate({ ...groupData, meta: { name: e.target.value } })}
                     />

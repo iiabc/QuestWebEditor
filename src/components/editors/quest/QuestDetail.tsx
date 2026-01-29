@@ -115,7 +115,7 @@ export function QuestDetail({ taskId, taskData, onUpdate, availableObjectives }:
                                             onUpdate({ ...taskData, event: undefined, node: {} });
                                         }
                                     }}
-                                    placeholder="搜索事件类型..."
+                                    placeholder="搜索…"
                                 />
                             </FormSection>
 
@@ -177,7 +177,7 @@ export function QuestDetail({ taskId, taskData, onUpdate, availableObjectives }:
                             <AgentEditor
                                 data={taskData.agent || {}}
                                 onUpdate={(newAgent) => onUpdate({ ...taskData, agent: newAgent })}
-                                types={['accept', 'complete', 'timeout', 'progress', 'track']}
+                                types={['complete', 'timeout', 'progress', 'track']}
                             />
                         </Stack>
                     </Tabs.Panel>

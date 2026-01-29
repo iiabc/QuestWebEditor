@@ -222,7 +222,7 @@ export function DataItem({ keyName, value, onChange, onDelete, level = 0, path =
                     <Box pt="sm">
                         {selectedType === 'string' && (
                             <TextInput
-                                placeholder="输入字符串值"
+                                placeholder=""
                                 value={typeof value === 'string' ? value : String(value || '')}
                                 onChange={(e) => handleValueChange(e.currentTarget.value)}
                                 size="sm"
@@ -231,7 +231,7 @@ export function DataItem({ keyName, value, onChange, onDelete, level = 0, path =
 
                         {selectedType === 'number' && (
                             <NumberInput
-                                placeholder="输入数字值"
+                                placeholder=""
                                 value={typeof value === 'number' ? value : (typeof value === 'string' ? parseFloat(value) || 0 : 0)}
                                 onChange={(val) => handleValueChange(val !== '' && val !== null && val !== undefined ? Number(val) : 0)}
                                 size="sm"
@@ -240,7 +240,7 @@ export function DataItem({ keyName, value, onChange, onDelete, level = 0, path =
 
                         {selectedType === 'list' && (
                             <Textarea
-                                placeholder="每行一个值"
+                                placeholder=""
                                 value={Array.isArray(value) ? value.join('\n') : ''}
                                 onChange={(e) => {
                                     // 保留所有行，包括空行（用户可能正在输入）

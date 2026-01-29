@@ -125,15 +125,14 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                                 <Title order={5} mb="xs">节点信息</Title>
                                 <FormInput
                                     label="节点 ID"
-                                    description="对话节点的唯一标识符"
+                                    description=""
                                     value={data.label}
                                     onChange={(e) => onUpdate({ ...data, label: e.currentTarget.value })}
                                     error={error}
                                 />
                                 <FormInput
                                     label="对话名称"
-                                    description="QuestEngine 格式：对话显示名称（可选，为空时显示 NPC 名称）"
-                                    placeholder="留空则显示 NPC 名称"
+                                    description=""
                                     value={data.name || ''}
                                     onChange={(e) => onUpdate({ ...data, name: e.currentTarget.value || undefined })}
                                 />
@@ -141,9 +140,8 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                             <FormSection>
                                 <Title order={5} mb="xs">触发条件</Title>
                                 <DebouncedTextarea
-                                    label="NPC 入口列表"
-                                    description="QuestEngine 格式：NPC ID，每行一个（仅在入口节点需要）"
-                                    placeholder="npc_1&#10;npc_2"
+                                    label="NPC 入口"
+                                    description=""
                                     value={(() => {
                                         if (data.npcs && data.npcs.length > 0) {
                                             return data.npcs.join('\n');
@@ -161,7 +159,6 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                                         onUpdate({
                                             ...data,
                                             npcs: npcs.length > 0 ? npcs : undefined,
-                                            // 如果只有一个 NPC，也设置 npcId 以保持兼容性
                                             npcId: npcs.length === 1 ? npcs[0] : undefined
                                         });
                                     }}
@@ -172,8 +169,7 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                                 />
                                 <DebouncedTextarea
                                     label="标签"
-                                    description="QuestEngine 格式：对话标签，每行一个"
-                                    placeholder="tag1&#10;tag2"
+                                    description=""
                                     value={data.tags ? data.tags.join('\n') : ''}
                                     onChange={(val) => {
                                         const tags = val
@@ -194,11 +190,10 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                     <Tabs.Panel value="npc">
                         <Stack gap="md">
                             <FormSection>
-                                <Title order={5} mb="xs">对话内容 (Content)</Title>
-                                <Text size="xs" c="dimmed" mb="xs">QuestEngine 格式：NPC 的对话内容，每行一条</Text>
+                                <Title order={5} mb="xs">对话内容</Title>
                                 <DebouncedTextarea
-                                    label="对话内容"
-                                    description="QuestEngine 格式：NPC 的对话内容，每行一条"
+                                    label=""
+                                    description=""
                                     value={(() => {
                                         if (Array.isArray(data.npcLines)) {
                                             return data.npcLines.join('\n');
@@ -271,22 +266,21 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                                         >
                                             <Stack gap="sm">
                                                 <FormInput
-                                                    label="选项文本 (Text)"
-                                                    description="QuestEngine 格式：玩家点击的按钮文本"
-                                                    placeholder="玩家点击的按钮文本"
+                                                    label="选项文本"
+                                                    description=""
                                                     value={opt.text}
                                                     onChange={(e) => handleOptionChange(idx, 'text', e.currentTarget.value)}
                                                 />
                                                 <FormScript
-                                                    label="显示条件 (if)"
-                                                    description="QuestEngine 格式：选项显示的条件"
+                                                    label="显示条件"
+                                                    description=""
                                                     height="80px"
                                                     value={opt.condition || ''}
                                                     onChange={(val) => handleOptionChange(idx, 'condition', val || '')}
                                                 />
                                                 <FormScript
-                                                    label="执行动作 (Action)"
-                                                    description="QuestEngine 格式：点击后执行的脚本"
+                                                    label="执行动作"
+                                                    description=""
                                                     height="100px"
                                                     value={opt.actions || ''}
                                                     onChange={(val) => handleOptionChange(idx, 'actions', val || '')}
@@ -363,7 +357,6 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                                 conversationNodeComponents.map(({ id: compId, component: compDef }) => (
                                     <FormSection key={compId}>
                                         <Title order={5} mb="xs">{compDef.name} ({compId})</Title>
-                                        <Text size="xs" c="dimmed" mb="sm">{compDef.description?.join(' / ')}</Text>
                                         <Stack gap="sm">
                                             {compDef.params.map((param: any) => (
                                                 <DynamicComponentField
@@ -440,7 +433,7 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                                 <Title order={5} mb="xs">节点信息</Title>
                                 <FormInput
                                     label="节点 ID"
-                                    description="对话节点的唯一标识符"
+                                    description=""
                                     value={data.label}
                                     onChange={(e) => onUpdate({ ...data, label: e.currentTarget.value })}
                                     error={error}
@@ -449,9 +442,8 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                             <FormSection>
                                 <Title order={5} mb="xs">触发条件</Title>
                                 <DebouncedTextarea
-                                    label="NPC 入口列表"
-                                    description="QuestEngine 格式：NPC ID，每行一个（仅在入口节点需要）"
-                                    placeholder="npc_1&#10;npc_2"
+                                    label="NPC 入口"
+                                    description=""
                                     value={(() => {
                                         if (data.npcs && data.npcs.length > 0) {
                                             return data.npcs.join('\n');
@@ -469,7 +461,6 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                                         onUpdate({
                                             ...data,
                                             npcs: npcs.length > 0 ? npcs : undefined,
-                                            // 如果只有一个 NPC，也设置 npcId 以保持兼容性
                                             npcId: npcs.length === 1 ? npcs[0] : undefined
                                         });
                                     }}
@@ -522,7 +513,8 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                                         >
                                             <Stack gap="sm">
                                                 <FormScript
-                                                    label="判断条件 (if)"
+                                                    label="判断条件"
+                                                    description=""
                                                     height="80px"
                                                     value={branch.condition || ''}
                                                     onChange={(val) => handleBranchChange(idx, 'condition', val || '')}
@@ -530,8 +522,8 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                                                 <FormSection>
                                                     <Title order={6} mb="xs">动作配置</Title>
                                                     <FormScript
-                                                        label="脚本内容 (action)"
-                                                        description="可选：执行的脚本内容"
+                                                        label="脚本"
+                                                        description=""
                                                         height="100px"
                                                         value={branch.action || ''}
                                                         onChange={(val) => {
@@ -547,9 +539,8 @@ export function ConversationNodeEditor({ opened, onClose, data, type = 'agent', 
                                                         }}
                                                     />
                                                     <FormInput
-                                                        label="打开对话 (open)"
-                                                        description="可选：请在画板上连接目标节点，或在此处输入目标对话节点ID"
-                                                        placeholder="目标对话节点ID"
+                                                        label="打开对话"
+                                                        description=""
                                                         value={branch.open || ''}
                                                         onChange={(e) => {
                                                             const newBranches = [...data.branches];

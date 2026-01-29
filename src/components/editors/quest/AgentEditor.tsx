@@ -1,114 +1,28 @@
 import { Stack, Badge, Group, Text } from '@mantine/core';
-import { FormAddon, FormScript, FormInput } from '@/components/ui';
+import { FormAddon, FormScript } from '@/components/ui';
+import { TrackNavigateForm } from './TrackNavigateForm';
 
 export const AGENT_TYPES = {
-    // Quest Agents
-    quest_accept: { 
-        label: '任务接受之前', 
-        tag: 'Quest Accept',
-        description: '任务接受之前（包含任何可能的检测）。不代表任务已经接受，请勿实现任何不可逆的行为。返回的内容决定是否继续逻辑。' 
-    },
-    quest_accepted: { 
-        label: '任务接受之后', 
-        tag: 'Quest Accepted',
-        description: '任务接受之后。' 
-    },
-    quest_accept_cancelled: { 
-        label: '任务取消之后', 
-        tag: 'Quest Accept Cancelled',
-        description: '任务接受被取消之后（任何可能的方式）。' 
-    },
-    quest_fail: { 
-        label: '任务失败之前', 
-        tag: 'Quest Fail',
-        description: '任务失败之前。不代表任务已经失败，请勿实现任何不可逆的行为。返回的内容决定是否继续逻辑。' 
-    },
-    quest_failed: { 
-        label: '任务失败之后', 
-        tag: 'Quest Failed',
-        description: '任务失败之后。' 
-    },
-    quest_complete: { 
-        label: '任务完成之前', 
-        tag: 'Quest Complete',
-        description: '任务完成之前。不代表任务已经完成，请勿实现任何不可逆的行为。返回的内容决定是否继续逻辑。' 
-    },
-    quest_completed: { 
-        label: '任务完成之后', 
-        tag: 'Quest Completed',
-        description: '任务完成之后。' 
-    },
-    quest_restart: { 
-        label: '任务重启之前', 
-        tag: 'Quest Restart',
-        description: '任务重启之前。不代表任务已经重启，请勿实现任何不可逆的行为。返回的内容决定是否继续逻辑。' 
-    },
-    quest_restarted: { 
-        label: '任务重启之后', 
-        tag: 'Quest Restarted',
-        description: '任务重启之后。' 
-    },
-
-    // Task Agents
-    task_continued: { 
-        label: '条目继续之后', 
-        tag: 'Task Continued',
-        description: '条目继续之后。' 
-    },
-    task_restarted: { 
-        label: '条目重置之后', 
-        tag: 'Task Restarted',
-        description: '条目重置之后。' 
-    },
-    task_completed: { 
-        label: '条目完成之后', 
-        tag: 'Task Completed',
-        description: '条目完成之后。' 
-    },
-
-    // Conversation Agents
-    begin: {
-        label: '对话开始前',
-        tag: 'Conversation Begin',
-        description: '对话开始前执行。可用于初始化变量或检查条件。'
-    },
-    end: {
-        label: '对话结束后',
-        tag: 'Conversation End',
-        description: '对话正常结束后执行。'
-    },
-    refuse: {
-        label: '对话被拒绝时',
-        tag: 'Conversation Refuse',
-        description: '当对话条件不满足或被拒绝时执行。'
-    },
-
-    // QuestEngine Trigger Types
-    accept: {
-        label: '接受任务',
-        tag: 'Accept',
-        description: '玩家接受任务时执行的脚本。'
-    },
-    complete: {
-        label: '完成条目',
-        tag: 'Complete',
-        description: '条目完成时执行的脚本。'
-    },
-    timeout: {
-        label: '任务超时',
-        tag: 'Timeout',
-        description: '任务超时时执行的脚本。'
-    },
-    progress: {
-        label: '进度更新',
-        tag: 'Progress',
-        description: '目标进度更新时执行的脚本。'
-    },
-    track: {
-        label: '追踪配置',
-        tag: 'Track',
-        description: '目标追踪配置（动作和导航）。'
-    }
+    quest_accept: { label: '任务接受之前', tag: 'Quest Accept', description: '' },
+    quest_accepted: { label: '任务接受之后', tag: 'Quest Accepted', description: '' },
+    quest_accept_cancelled: { label: '任务取消之后', tag: 'Quest Accept Cancelled', description: '' },
+    quest_fail: { label: '任务失败之前', tag: 'Quest Fail', description: '' },
+    quest_failed: { label: '任务失败之后', tag: 'Quest Failed', description: '' },
+    quest_complete: { label: '任务完成之前', tag: 'Quest Complete', description: '' },
+    quest_completed: { label: '任务完成之后', tag: 'Quest Completed', description: '' },
+    quest_restart: { label: '任务重启之前', tag: 'Quest Restart', description: '' },
+    quest_restarted: { label: '任务重启之后', tag: 'Quest Restarted', description: '' },
+    task_continued: { label: '条目继续之后', tag: 'Task Continued', description: '' },
+    task_restarted: { label: '条目重置之后', tag: 'Task Restarted', description: '' },
+    task_completed: { label: '条目完成之后', tag: 'Task Completed', description: '' },
+    begin: { label: '对话开始前', tag: 'Conversation Begin', description: '' },
+    end: { label: '对话结束后', tag: 'Conversation End', description: '' },
+    refuse: { label: '对话被拒绝时', tag: 'Conversation Refuse', description: '' },
+    accept: { label: '接受任务', tag: 'Accept', description: '' },
+    complete: { label: '完成条目', tag: 'Complete', description: '' },
+    timeout: { label: '任务超时', tag: 'Timeout', description: '' },
+    progress: { label: '进度更新', tag: 'Progress', description: '' },
+    track: { label: '追踪配置', tag: 'Track', description: '' },
 };
 
 interface AgentEditorProps {
@@ -123,7 +37,6 @@ export function AgentEditor({ data, onUpdate, types = [] }: AgentEditorProps) {
             {types.map(type => {
                 const config = AGENT_TYPES[type as keyof typeof AGENT_TYPES] || { label: type, tag: type, description: `Script for ${type}` };
                 
-                // track 字段是对象，需要特殊处理
                 if (type === 'track') {
                     return (
                         <FormAddon
@@ -138,12 +51,9 @@ export function AgentEditor({ data, onUpdate, types = [] }: AgentEditorProps) {
                             checked={!!data?.track}
                             onChange={(checked) => {
                                 if (checked) {
-                                    onUpdate({ 
-                                        ...data, 
-                                        track: { 
-                                            action: '', 
-                                            navigate: { title: '', location: '', adyeshach: '' } 
-                                        } 
+                                    onUpdate({
+                                        ...data,
+                                        track: { action: '', navigate: { title: '', location: '', adyeshach: '' } },
                                     });
                                 } else {
                                     const { track, ...rest } = data || {};
@@ -154,74 +64,21 @@ export function AgentEditor({ data, onUpdate, types = [] }: AgentEditorProps) {
                             <Stack gap="md">
                                 <FormScript
                                     label="追踪动作"
-                                    description="追踪时执行的动作脚本"
+                                    description=""
                                     height="200px"
-                                    value={data?.track?.action || ''}
-                                    onChange={(val) => onUpdate({ 
-                                        ...data, 
-                                        track: { 
-                                            ...data?.track, 
-                                            action: val || '' 
-                                        } 
+                                    value={data?.track?.action ?? ''}
+                                    onChange={(val) => onUpdate({
+                                        ...data,
+                                        track: { ...data?.track, action: val ?? '' },
                                     })}
                                 />
                                 <Text size="sm" fw={500} mt="xs">导航配置</Text>
-                                <FormInput
-                                    label="导航标题"
-                                    description="导航显示的标题"
-                                    value={data?.track?.navigate?.title || ''}
-                                    onChange={(e) => onUpdate({ 
-                                        ...data, 
-                                        track: { 
-                                            ...data?.track, 
-                                            navigate: {
-                                                ...data?.track?.navigate,
-                                                title: e.target.value || ''
-                                            }
-                                        } 
+                                <TrackNavigateForm
+                                    value={data?.track?.navigate ?? { title: '', location: '', adyeshach: '' }}
+                                    onChange={(nav) => onUpdate({
+                                        ...data,
+                                        track: { ...data?.track, navigate: nav },
                                     })}
-                                />
-                                <FormInput
-                                    label="位置"
-                                    description="导航位置，格式：world x y z（与 NPC ID 二选一）"
-                                    value={data?.track?.navigate?.location || ''}
-                                    onChange={(e) => {
-                                        const newValue = e.target.value;
-                                        onUpdate({ 
-                                            ...data, 
-                                            track: { 
-                                                ...data?.track, 
-                                                navigate: {
-                                                    ...data?.track?.navigate,
-                                                    location: newValue || '',
-                                                    // 如果设置了位置，清空 NPC ID
-                                                    ...(newValue ? { adyeshach: '' } : {})
-                                                }
-                                            } 
-                                        });
-                                    }}
-                                    disabled={!!data?.track?.navigate?.adyeshach}
-                                />
-                                <FormInput
-                                    label="NPC ID"
-                                    description="Adyeshach NPC ID（与位置二选一）"
-                                    value={data?.track?.navigate?.adyeshach || ''}
-                                    onChange={(e) => {
-                                        const newValue = e.target.value;
-                                        onUpdate({ 
-                                            ...data, 
-                                            track: { 
-                                                ...data?.track, 
-                                                navigate: {
-                                                    ...data?.track?.navigate,
-                                                    adyeshach: newValue || '',
-                                                    // 如果设置了 NPC ID，清空位置
-                                                    ...(newValue ? { location: '' } : {})
-                                                }
-                                            } 
-                                        });
-                                    }}
-                                    disabled={!!data?.track?.navigate?.location}
                                 />
                             </Stack>
                         </FormAddon>

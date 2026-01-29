@@ -74,8 +74,8 @@ export function TimeAddon({ addon, onChange }: TimeAddonProps) {
 
     return (
         <FormAddon
-            label="时间配置 (Time)"
-            description="任务时间限制和周期配置"
+            label="时间配置"
+            description="时间限制与周期"
             checked={!!addon?.time}
                     onChange={(checked) => {
                 if (checked) {
@@ -100,31 +100,31 @@ export function TimeAddon({ addon, onChange }: TimeAddonProps) {
                     value={timeType}
                     onChange={(val) => handleTimeTypeChange(val as 'limit' | 'cycle')}
                     data={[
-                        { label: '时间限制 (limit)', value: 'limit' },
-                        { label: '周期 (cycle)', value: 'cycle' },
+                        { label: '时间限制', value: 'limit' },
+                        { label: '周期', value: 'cycle' },
                     ]}
                     fullWidth
                 />
                 {timeType === 'limit' ? (
                     <FormTimePicker
-                        label="时间限制 (limit)"
-                        description="任务时间限制，例如：5h（5小时）、1d（1天）、30m（30分钟）、3h20m（3小时20分钟）"
+                        label="时间限制"
+                        description=""
                         value={addon?.time?.limit || ''}
                         onChange={(value) => updateTime('limit', value)}
                         mode="duration"
                     />
                 ) : (
                     <FormTimePicker
-                        label="周期 (cycle)"
-                        description="超时周期，例如：每天 06:00、每周一 10:00、每月 1 号 20:00"
+                        label="周期"
+                        description=""
                         value={addon?.time?.cycle || ''}
                         onChange={(value) => updateTime('cycle', value)}
                         mode="periodic"
                     />
                 )}
                 <FormAddon
-                    label="计划 (plan)"
-                    description="超时后何时可以接受任务"
+                    label="计划"
+                    description="超时后接受"
                     checked={!!addon?.time?.plan}
                     onChange={(checked) => {
                         if (checked) {
@@ -139,14 +139,14 @@ export function TimeAddon({ addon, onChange }: TimeAddonProps) {
                 >
                     <Stack gap="md">
                         <FormCheckbox
-                            label="自动接受 (auto)"
-                            description="是否自动接受任务"
+                            label="自动接受"
+                            description=""
                             checked={addon?.time?.plan?.auto || false}
                             onChange={(e) => updatePlan('auto', e.currentTarget.checked)}
                         />
                         <FormTimePicker
-                            label="时间 (timing)"
-                            description="何时可以接受任务，例如：每天 08:00、每周一 10:00、每月 1 号 20:00"
+                            label="接受时间"
+                            description=""
                             value={addon?.time?.plan?.timing || ''}
                             onChange={(value) => updatePlan('timing', value)}
                             mode="periodic"

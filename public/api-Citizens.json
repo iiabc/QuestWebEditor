@@ -42,27 +42,27 @@
                     {
                         "name": "id",
                         "type": "List<Int>",
-                        "description": "NPC ID 列表 (整数)"
+                        "description": "NPC ID"
                     },
                     {
                         "name": "type",
                         "type": "List<String>",
-                        "description": "NPC 类型列表"
+                        "description": "NPC 类型"
                     },
                     {
                         "name": "name",
                         "type": "List<String>",
-                        "description": "NPC 名称列表"
+                        "description": "NPC 名称"
                     },
                     {
                         "name": "item-main",
                         "type": "List<String>",
-                        "description": "主手物品列表"
+                        "description": "主手物品"
                     },
                     {
                         "name": "item-off",
                         "type": "List<String>",
-                        "description": "副手物品列表"
+                        "description": "副手物品"
                     },
                     {
                         "name": "position",
@@ -117,27 +117,27 @@
                     {
                         "name": "id",
                         "type": "List<Int>",
-                        "description": "NPC ID 列表 (整数)"
+                        "description": "NPC ID"
                     },
                     {
                         "name": "type",
                         "type": "List<String>",
-                        "description": "NPC 类型列表"
+                        "description": "NPC 类型"
                     },
                     {
                         "name": "name",
                         "type": "List<String>",
-                        "description": "NPC 名称列表"
+                        "description": "NPC 名称"
                     },
                     {
                         "name": "item-main",
                         "type": "List<String>",
-                        "description": "主手物品列表"
+                        "description": "主手物品"
                     },
                     {
                         "name": "item-off",
                         "type": "List<String>",
-                        "description": "副手物品列表"
+                        "description": "副手物品"
                     },
                     {
                         "name": "position",

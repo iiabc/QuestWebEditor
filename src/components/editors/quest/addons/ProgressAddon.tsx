@@ -36,8 +36,8 @@ export function ProgressAddon({ addon, onChange }: ProgressAddonProps) {
             />
 
             <FormAddon
-                label="进度配置 (progress)"
-                description="全服共享进度配置"
+                label="进度配置"
+                description=""
                 checked={!!addon?.progress}
                 onChange={(checked) => {
                     if (checked) {
@@ -57,23 +57,21 @@ export function ProgressAddon({ addon, onChange }: ProgressAddonProps) {
             >
                 <Stack gap="md">
                     <FormInput
-                        label="范围 (scope)"
-                        description="进度范围，例如：server"
-                        placeholder="server"
+                        label="范围"
+                        description=""
                         value={addon?.progress?.scope || ''}
                         onChange={(e) => updateProgress('scope', e.target.value)}
                     />
                     <FormInput
-                        label="数量 (amount)"
-                        description="全服进度要求，支持 Kether 脚本或数字"
-                        placeholder="1000"
+                        label="数量"
+                        description=""
                         value={addon?.progress?.amount || ''}
                         onChange={(e) => updateProgress('amount', e.target.value)}
                     />
                     <AgentEditor
                         data={addon?.progress?.agent || {}}
                         onUpdate={(newAgent) => updateProgress('agent', newAgent)}
-                        types={['accept', 'complete', 'timeout', 'progress']}
+                        types={['complete', 'timeout', 'progress']}
                     />
                 </Stack>
             </FormAddon>

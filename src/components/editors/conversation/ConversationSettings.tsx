@@ -27,7 +27,7 @@ export function ConversationSettings({ opened, onClose, options: _options, onSav
         >
             <Stack gap="md">
                 <Alert icon={<IconInfoCircle size={16} />} title="提示" color="blue">
-                    QuestEngine 格式不使用全局设置。对话的 NPC、名称、标签等设置应在各个节点中配置。
+                    对话配置在各节点中设置
                 </Alert>
 
                 <Group justify="flex-end" mt="md">

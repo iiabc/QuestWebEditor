@@ -14,41 +14,34 @@ export const ListItemInterpreterField: React.FC<ListItemInterpreterFieldProps> =
     onChange,
     description
 }) => {
-    const [items, setItems] = useState<string[]>(['']);
+    const [items, setItems] = useState<string[]>([]);
 
-    // 当 value prop 变化时，更新内部状态
     useEffect(() => {
-        if (Array.isArray(value)) {
-            setItems(value.length > 0 ? value : ['']);
+        if (Array.isArray(value) && value.length > 0) {
+            setItems(value);
         } else {
-            setItems(['']);
+            setItems([]);
         }
     }, [value]);
 
-    // 更新值并通知父组件
-    const updateItems = (newItems: string[]) => {
+    const applyChange = (newItems: string[]) => {
         setItems(newItems);
-        const validItems = newItems.filter(item => item && item.trim() !== '');
-        onChange(validItems.length > 0 ? validItems : undefined);
+        const valid = newItems.filter(item => item != null && String(item).trim() !== '');
+        onChange(valid.length > 0 ? valid : undefined);
     };
 
     const handleItemChange = (index: number, newValue: string) => {
-        const newItems = [...items];
-        newItems[index] = newValue;
-        updateItems(newItems);
+        const next = [...items];
+        next[index] = newValue;
+        applyChange(next);
     };
 
     const handleAddItem = () => {
-        updateItems([...items, '']);
+        setItems([...items, '']);
     };
 
     const handleRemoveItem = (index: number) => {
-        if (items.length > 1) {
-            updateItems(items.filter((_, i) => i !== index));
-        } else {
-            // 如果只有一个，清空它而不是删除
-            updateItems(['']);
-        }
+        applyChange(items.filter((_, i) => i !== index));
     };
 
     return (
@@ -81,7 +74,6 @@ export const ListItemInterpreterField: React.FC<ListItemInterpreterFieldProps> =
                             variant="subtle"
                             size="sm"
                             onClick={() => handleRemoveItem(index)}
-                            disabled={items.length === 1 && !item}
                         >
                             <IconTrash size={14} />
                         </ActionIcon>

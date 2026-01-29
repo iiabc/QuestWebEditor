@@ -242,7 +242,6 @@ export function FormTimePicker({ label, description, value = '', onChange, error
                     {periodicTime.type === 'week' && (
                         <Select
                             label="星期几"
-                            description="0=周日, 1=周一, ..., 6=周六"
                             data={[
                                 { value: '0', label: '周日' },
                                 { value: '1', label: '周一' },
@@ -259,7 +258,6 @@ export function FormTimePicker({ label, description, value = '', onChange, error
                     {periodicTime.type === 'month' && (
                         <NumberInput
                             label="日期"
-                            description="每月的第几天 (1-31)"
                             min={1}
                             max={31}
                             value={periodicTime.day || 1}
@@ -269,7 +267,6 @@ export function FormTimePicker({ label, description, value = '', onChange, error
                     <Group grow>
                         <NumberInput
                             label="小时"
-                            description="0-23"
                             min={0}
                             max={23}
                             value={periodicTime.hour}
@@ -277,7 +274,6 @@ export function FormTimePicker({ label, description, value = '', onChange, error
                         />
                         <NumberInput
                             label="分钟"
-                            description="0-59"
                             min={0}
                             max={59}
                             value={periodicTime.minute}
@@ -286,7 +282,7 @@ export function FormTimePicker({ label, description, value = '', onChange, error
                     </Group>
                     <Box p="xs" style={{ backgroundColor: 'var(--mantine-color-dark-7)', borderRadius: 4 }}>
                         <Text size="xs" c="dimmed" style={{ fontFamily: 'monospace' }}>
-                            生成格式: {formatPeriodicTime(periodicTime)}
+                            {formatPeriodicTime(periodicTime)}
                         </Text>
                     </Box>
                 </Stack>
@@ -324,7 +320,7 @@ export function FormTimePicker({ label, description, value = '', onChange, error
                     </Group>
                     <Box p="xs" style={{ backgroundColor: 'var(--mantine-color-dark-7)', borderRadius: 4 }}>
                         <Text size="xs" c="dimmed" style={{ fontFamily: 'monospace' }}>
-                            生成格式: {formatDurationTime(durationTime) || '(空)'}
+                            {formatDurationTime(durationTime) || '(空)'}
                         </Text>
                     </Box>
                 </Stack>

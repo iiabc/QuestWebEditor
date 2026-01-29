@@ -16,6 +16,60 @@ function normalizeLineEndings(value: any): any {
   return value;
 }
 
+function nonEmpty(s: any): boolean {
+  return typeof s === 'string' && String(s).trim() !== '';
+}
+
+/** 只保留有值的 track 字段；未写的 action / navigate 子项不输出。若全空则返回 {}，避免丢弃 track 导致开关状态丢失。 */
+function pruneTrack(track: any): any {
+  if (!track || typeof track !== 'object') return undefined;
+  const out: any = {};
+  if (nonEmpty(track.action)) out.action = track.action;
+  const n = track.navigate;
+  if (n && typeof n === 'object') {
+    const nav: any = {};
+    if (nonEmpty(n.title)) nav.title = n.title;
+    if (nonEmpty(n.location)) nav.location = n.location;
+    if (nonEmpty(n.adyeshach)) nav.adyeshach = n.adyeshach;
+    if (Object.keys(nav).length > 0) out.navigate = nav;
+  }
+  return out;
+}
+
+function applyTrackPruneToAgent(agent: any): any {
+  if (!agent || typeof agent !== 'object') return agent;
+  if (!('track' in agent)) return agent;
+  const pruned = pruneTrack(agent.track);
+  if (pruned == null) return agent;
+  return { ...agent, track: pruned };
+}
+
+/** 序列化前按字段过滤 agent.track：未填的节点不输出到 YAML。 */
+export function sanitizeQuestForYaml(data: any): any {
+  if (!data || typeof data !== 'object') return data;
+  const out = { ...data };
+  if (out.agent) {
+    const a = applyTrackPruneToAgent(out.agent);
+    if (a != null) out.agent = a; else delete out.agent;
+  }
+  if (out.objective && typeof out.objective === 'object') {
+    const obj: Record<string, any> = {};
+    for (const k of Object.keys(out.objective)) {
+      const t = out.objective[k];
+      if (t && typeof t === 'object' && t.agent) {
+        const a = applyTrackPruneToAgent(t.agent);
+        const task = { ...t };
+        if (a != null) task.agent = a; else delete task.agent;
+        obj[k] = task;
+      } else {
+        obj[k] = t;
+      }
+    }
+    out.objective = obj;
+  }
+  return out;
+}
+
 export const toYaml = (obj: any): string => {
   try {
     // 先规范化换行符

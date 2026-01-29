@@ -54,14 +54,14 @@ export function QuestSettings({ fileId, questId, questData, onUpdate }: QuestSet
                             <FormSection>
                                 <FormInput
                                     label="任务 ID"
-                                    description="任务的唯一标识符"
+                                    description=""
                                     value={questId}
                                     onChange={(e) => onUpdate(questData, e.target.value)}
                                     error={idError}
                                 />
                                 <FormInput
                                     label="显示名称"
-                                    description="显示给玩家的任务名称"
+                                    description=""
                                     value={questData.meta?.name || ''}
                                     onChange={(e) => onUpdate({ ...questData, meta: { name: e.target.value } })}
                                 />

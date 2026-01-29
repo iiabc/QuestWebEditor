@@ -9,15 +9,10 @@ interface ListStringFieldProps {
     description?: string;
 }
 
-/**
- * ListStringField 组件
- * 用于处理 List<String> 类型的字段，如物品解释器列表、实体解释器列表等
- * 每个字符串是一个解释器格式（如 "minecraft:stone" 或 "minecraft:zombie"）
- */
-export const ListStringField: React.FC<ListStringFieldProps> = ({ 
-    value, 
-    onChange, 
-    placeholder = "每行一个解释器格式，例如：\nminecraft:stone\nminecraft:diamond",
+export const ListStringField: React.FC<ListStringFieldProps> = ({
+    value,
+    onChange,
+    placeholder,
     description
 }) => {
     // 将数组转换为字符串（每行一个）
@@ -48,7 +43,7 @@ export const ListStringField: React.FC<ListStringFieldProps> = ({
             <DebouncedTextarea
                 value={stringValue}
                 onChange={handleChange}
-                placeholder={placeholder}
+                placeholder={placeholder || ''}
                 autosize
                 minRows={2}
                 maxRows={10}

@@ -1,6 +1,6 @@
 import { Paper, Tabs, Text } from '@mantine/core';
 import { useProjectStore } from '@/store/useProjectStore';
-import { parseYaml, toYaml } from '@/utils/yaml-utils';
+import { parseYaml, toYaml, sanitizeQuestForYaml } from '@/utils/yaml-utils';
 import { IconSettings, IconCheckbox } from '@tabler/icons-react';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { DropResult } from '@hello-pangea/dnd';
@@ -75,7 +75,8 @@ export default function QuestForm({ fileId }: { fileId: string }) {
 
   const handleUpdate = (newData: any, newId?: string) => {
     const idToUse = newId || questId;
-    const newYaml = toYaml({ [idToUse]: newData });
+    const sanitized = sanitizeQuestForYaml(newData);
+    const newYaml = toYaml({ [idToUse]: sanitized });
     updateFileContent(fileId, 'quest', newYaml);
   };
 

@@ -42,7 +42,6 @@ export default function AgentProperties({ node, onChange }: AgentPropertiesProps
         <TextInput 
             value={data.label} 
             onChange={(e) => updateData({ label: e.currentTarget.value })} 
-            description="Unique identifier for this conversation node"
         />
       </Box>
 
@@ -52,7 +51,6 @@ export default function AgentProperties({ node, onChange }: AgentPropertiesProps
             <TextInput 
                 label="NPC ID" 
                 size="xs"
-                placeholder="e.g. adyeshach test2"
                 value={data.npcId || ''} 
                 onChange={(e) => updateData({ npcId: e.currentTarget.value })} 
             />
@@ -70,9 +68,7 @@ export default function AgentProperties({ node, onChange }: AgentPropertiesProps
                     onChange={(e) => updateData({ npcLines: e.currentTarget.value.split('\n') })}
                     autosize
                     minRows={3}
-                    placeholder="Enter NPC dialogue here..."
                 />
-                <Text size="xs" c="dimmed" mt={4}>One line per message bubble.</Text>
             </Accordion.Panel>
         </Accordion.Item>
 
@@ -98,18 +94,16 @@ export default function AgentProperties({ node, onChange }: AgentPropertiesProps
                         onChange={(e) => handleOptionChange(idx, 'text', e.currentTarget.value)}
                     />
                     <TextInput 
-                        label="Condition (if)"
+                        label="Condition"
                         size="xs"
-                        placeholder="e.g. permission admin"
                         value={opt.condition || ''}
                         onChange={(e) => handleOptionChange(idx, 'condition', e.currentTarget.value)}
                     />
                     <Textarea 
-                        label="Actions (then)"
+                        label="Actions"
                         size="xs"
                         autosize
                         minRows={1}
-                        placeholder="Additional scripts (goto is handled by connections)"
                         value={opt.actions || ''}
                         onChange={(e) => handleOptionChange(idx, 'actions', e.currentTarget.value)}
                         styles={{ input: { fontFamily: 'monospace' } }}

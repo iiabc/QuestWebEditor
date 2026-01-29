@@ -102,7 +102,7 @@ export function ApiTestPage() {
                 value={selectedObjective}
                 onChange={handleObjectiveChange}
                 label="搜索任务目标"
-                description="支持 ID、中文名、别名模糊搜索"
+                description=""
               />
 
               {selectedObjItem && (
@@ -142,7 +142,7 @@ export function ApiTestPage() {
                 value={selectedMeta}
                 onChange={handleMetaChange}
                 label="搜索 Meta 组件"
-                description="支持 ID、中文名、别名模糊搜索"
+                description=""
               />
 
               {selectedMetaItem && (
@@ -190,7 +190,7 @@ export function ApiTestPage() {
                 value={selectedAddon}
                 onChange={handleAddonChange}
                 label="搜索 Addon 组件"
-                description="支持 ID、中文名、别名模糊搜索"
+                description=""
               />
 
               {selectedAddonItem && (

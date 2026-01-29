@@ -45,6 +45,13 @@ const ITEM_API_CONFIG: Record<string, { label: string; properties: Array<{ value
             { value: 'id', label: 'ID (物品标识符)', type: 'string' },
         ]
     },
+    SmcCore: {
+        label: 'SmcCore',
+        properties: [
+            { value: 'id', label: 'ID (物品标识符)', type: 'string' },
+            { value: 'amount', label: 'Amount (数量)', type: 'number' },
+        ]
+    },
 };
 
 // API 选项列表

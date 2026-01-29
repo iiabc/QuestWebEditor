@@ -9,8 +9,8 @@ interface UIAddonProps {
 export function UIAddon({ addon, onChange }: UIAddonProps) {
     return (
         <FormAddon
-            label="界面 (UI)"
-            description="任务显示文本列表"
+            label="界面"
+            description="显示文本"
             checked={!!addon?.ui}
             onChange={(checked) => {
                 if (checked) {
@@ -22,8 +22,8 @@ export function UIAddon({ addon, onChange }: UIAddonProps) {
             }}
         >
             <DebouncedTextarea
-                label="显示文本 (Display)"
-                description="QuestEngine 格式：任务显示文本列表，每行一条，支持变量如 {progress_1}、{is_complete_1}"
+                label="显示文本"
+                description=""
                 value={Array.isArray(addon?.ui?.display) ? addon.ui.display.join('\n') : ''}
                 onChange={(val) => onChange({
                     ...addon,

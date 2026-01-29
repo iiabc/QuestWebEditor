@@ -1,0 +1,30 @@
+{
+    "FancyNPCs": {
+        "objective": {
+            "fnpc interact": {
+                "condition": [
+                    { "name": "id", "pattern": "List<String>" },
+                    { "name": "name", "pattern": "List<String>" },
+                    { "name": "interaction-type", "pattern": "List<String>" },
+                    { "name": "item-main", "pattern": "List<String>" },
+                    { "name": "item-off", "pattern": "List<String>" },
+                    { "name": "position", "pattern": "String" }
+                ],
+                "goal": [
+                    { "name": "amount", "pattern": "Number" }
+                ],
+                "name": "FancyNPCs 交互",
+                "description": ["与 FancyNPCs 实体交互"],
+                "params": [
+                    { "name": "id", "type": "List<String>", "description": "NPC ID" },
+                    { "name": "name", "type": "List<String>", "description": "NPC 名称" },
+                    { "name": "interaction-type", "type": "List<String>", "description": "交互类型" },
+                    { "name": "item-main", "type": "List<String>", "description": "主手物品" },
+                    { "name": "item-off", "type": "List<String>", "description": "副手物品" },
+                    { "name": "position", "type": "String", "description": "位置" },
+                    { "name": "amount", "type": "Number", "description": "数量" }
+                ]
+            }
+        }
+    }
+}

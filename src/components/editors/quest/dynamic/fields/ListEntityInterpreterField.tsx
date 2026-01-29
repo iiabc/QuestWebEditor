@@ -14,41 +14,34 @@ export const ListEntityInterpreterField: React.FC<ListEntityInterpreterFieldProp
     onChange,
     description
 }) => {
-    const [entities, setEntities] = useState<string[]>(['']);
+    const [entities, setEntities] = useState<string[]>([]);
 
-    // 当 value prop 变化时，更新内部状态
     useEffect(() => {
-        if (Array.isArray(value)) {
-            setEntities(value.length > 0 ? value : ['']);
+        if (Array.isArray(value) && value.length > 0) {
+            setEntities(value);
         } else {
-            setEntities(['']);
+            setEntities([]);
         }
     }, [value]);
 
-    // 更新值并通知父组件
-    const updateEntities = (newEntities: string[]) => {
+    const applyChange = (newEntities: string[]) => {
         setEntities(newEntities);
-        const validEntities = newEntities.filter(entity => entity && entity.trim() !== '');
-        onChange(validEntities.length > 0 ? validEntities : undefined);
+        const valid = newEntities.filter(e => e != null && String(e).trim() !== '');
+        onChange(valid.length > 0 ? valid : undefined);
     };
 
     const handleEntityChange = (index: number, newValue: string) => {
-        const newEntities = [...entities];
-        newEntities[index] = newValue;
-        updateEntities(newEntities);
+        const next = [...entities];
+        next[index] = newValue;
+        applyChange(next);
     };
 
     const handleAddEntity = () => {
-        updateEntities([...entities, '']);
+        setEntities([...entities, '']);
     };
 
     const handleRemoveEntity = (index: number) => {
-        if (entities.length > 1) {
-            updateEntities(entities.filter((_, i) => i !== index));
-        } else {
-            // 如果只有一个，清空它而不是删除
-            updateEntities(['']);
-        }
+        applyChange(entities.filter((_, i) => i !== index));
     };
 
     return (
@@ -81,7 +74,6 @@ export const ListEntityInterpreterField: React.FC<ListEntityInterpreterFieldProp
                             variant="subtle"
                             size="sm"
                             onClick={() => handleRemoveEntity(index)}
-                            disabled={entities.length === 1 && !entity}
                         >
                             <IconTrash size={14} />
                         </ActionIcon>

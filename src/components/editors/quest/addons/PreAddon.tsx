@@ -26,8 +26,8 @@ export function PreAddon({ addon, onChange, scope, availableQuests = {}, availab
         // Quest 级别的 pre: { if: "", quests: [] }
         return (
             <FormAddon
-                label="前置条件 (Pre)"
-                description="任务接受的前置条件"
+                label="前置条件"
+                description="任务级"
                 checked={!!addon?.pre}
                 onChange={(checked) => {
                     if (checked) {
@@ -40,8 +40,8 @@ export function PreAddon({ addon, onChange, scope, availableQuests = {}, availab
             >
                 <Stack gap="md">
                     <FormScript
-                        label="条件 (if)"
-                        description="Kether 条件脚本，满足条件才能接受任务"
+                        label="条件"
+                        description=""
                         height="150px"
                         value={addon?.pre?.if || ''}
                         onChange={(val) => updatePre('if', val || '')}
@@ -54,9 +54,8 @@ export function PreAddon({ addon, onChange, scope, availableQuests = {}, availab
                         />
                     ) : (
                         <DebouncedTextarea
-                            label="前置任务列表 (quests)"
-                            description="需要完成的任务列表，每行一个任务 ID"
-                            placeholder="quest_id_1&#10;quest_id_2"
+                            label="前置任务"
+                            description=""
                             value={Array.isArray(addon?.pre?.quests) ? addon.pre.quests.join('\n') : ''}
                             onChange={(val) => {
                                 const quests = val
@@ -77,8 +76,8 @@ export function PreAddon({ addon, onChange, scope, availableQuests = {}, availab
         // Objective 级别的 pre: { objectives: [], if: "" }
         return (
             <FormAddon
-                label="前置条件 (Pre)"
-                description="目标激活的前置条件"
+                label="前置条件"
+                description="目标级"
                 checked={!!addon?.pre}
                 onChange={(checked) => {
                     if (checked) {
@@ -91,8 +90,8 @@ export function PreAddon({ addon, onChange, scope, availableQuests = {}, availab
             >
                 <Stack gap="md">
                     <FormScript
-                        label="条件 (if)"
-                        description="Kether 条件脚本，满足条件才能激活此目标"
+                        label="条件"
+                        description=""
                         height="150px"
                         value={addon?.pre?.if || ''}
                         onChange={(val) => updatePre('if', val || '')}
@@ -106,9 +105,8 @@ export function PreAddon({ addon, onChange, scope, availableQuests = {}, availab
                         />
                     ) : (
                         <DebouncedTextarea
-                            label="前置目标列表 (objectives)"
-                            description="需要完成的目标列表，每行一个目标 ID（数字）"
-                            placeholder="1&#10;2"
+                            label="前置目标"
+                            description=""
                             value={Array.isArray(addon?.pre?.objectives) ? addon.pre.objectives.join('\n') : ''}
                             onChange={(val) => {
                                 const objectives = val
