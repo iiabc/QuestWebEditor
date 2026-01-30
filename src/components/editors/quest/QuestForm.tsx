@@ -21,7 +21,30 @@ export default function QuestForm({ fileId }: { fileId: string }) {
   }, [file.content]);
 
   const questId = useMemo(() => Object.keys(parsedData)[0] || 'new_quest', [parsedData]);
-  const questData = useMemo(() => parsedData[questId] || { meta: {}, objective: {} }, [parsedData, questId]);
+  const questData = useMemo(() => {
+    const raw = parsedData[questId] || { meta: {}, objective: {} };
+    return JSON.parse(JSON.stringify(raw));
+  }, [parsedData, questId]);
+
+  // 条目显示顺序：有 objectiveOrder 则用，否则从 objective 键推导并补全
+  const orderedTaskIds = useMemo(() => {
+    const objectives = questData.objective || {};
+    const keys = Object.keys(objectives);
+    const order = questData.objectiveOrder;
+    if (Array.isArray(order) && order.length > 0) {
+      const orderSet = new Set(order.map(String));
+      const missing = keys.filter((k) => !orderSet.has(k));
+      return [...order.filter((id) => objectives[id] != null), ...missing];
+    }
+    return keys
+      .map((k) => (isNaN(Number(k)) ? k : Number(k)))
+      .sort((a, b) =>
+        typeof a === 'number' && typeof b === 'number' ? a - b
+        : typeof a === 'number' ? -1
+        : typeof b === 'number' ? 1
+        : String(a).localeCompare(String(b))
+      );
+  }, [questData.objective, questData.objectiveOrder]);
   
   const [activeTaskId, setActiveTaskId] = useState<number | string | null>(null);
   const [sidebarWidth, setSidebarWidth] = useState(250);
@@ -81,28 +104,30 @@ export default function QuestForm({ fileId }: { fileId: string }) {
   };
 
   const handleTaskUpdate = (taskId: number | string, taskData: any) => {
-    const newObjectives = { ...questData.objective, [taskId]: taskData };
+    const currentObjectives = questData.objective || {};
+    const newObjectives: Record<string, any> = {};
+    for (const k of Object.keys(currentObjectives)) {
+      if (String(k) === String(taskId)) {
+        newObjectives[k] = taskData;
+      } else {
+        newObjectives[k] = JSON.parse(JSON.stringify(currentObjectives[k]));
+      }
+    }
     handleUpdate({ ...questData, objective: newObjectives });
   };
 
   const handleTaskRename = (oldId: number | string, newId: number | string) => {
     if (String(oldId) === String(newId)) return;
-    
     const currentObjectives = questData.objective || {};
-    if (currentObjectives[newId]) {
-        return;
-    }
+    if (currentObjectives[newId]) return;
 
-    const newObjectives: any = {};
-    Object.keys(currentObjectives).forEach(key => {
-        if (String(key) === String(oldId)) {
-            newObjectives[newId] = currentObjectives[oldId];
-        } else {
-            newObjectives[key] = currentObjectives[key];
-        }
+    const newObjectives: Record<string, any> = {};
+    Object.keys(currentObjectives).forEach((key) => {
+      const targetKey = String(key) === String(oldId) ? newId : key;
+      newObjectives[String(targetKey)] = String(key) === String(oldId) ? { ...currentObjectives[oldId] } : currentObjectives[key];
     });
-
-    handleUpdate({ ...questData, objective: newObjectives });
+    const newOrder = orderedTaskIds.map((id) => (String(id) === String(oldId) ? newId : id));
+    handleUpdate({ ...questData, objective: newObjectives, objectiveOrder: newOrder });
     setActiveTaskId(newId);
   };
 
@@ -111,11 +136,9 @@ export default function QuestForm({ fileId }: { fileId: string }) {
     const existingIds = Object.keys(currentObjectives).map(Number).filter(id => !isNaN(id));
     const nextId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
 
-    const newObjectives = { 
-        ...currentObjectives, 
-        [nextId]: { event: 'block break', node: { amount: 1 } } 
-    };
-    handleUpdate({ ...questData, objective: newObjectives });
+    const newObjectives = { ...currentObjectives, [nextId]: { event: 'block break', node: { amount: 1 } } };
+    const newOrder = [...orderedTaskIds, nextId];
+    handleUpdate({ ...questData, objective: newObjectives, objectiveOrder: newOrder });
     setActiveTaskId(nextId);
   };
 
@@ -137,46 +160,34 @@ export default function QuestForm({ fileId }: { fileId: string }) {
         }
     }
 
-    const newObjectives = { 
-        ...currentObjectives, 
-        [nextId]: JSON.parse(JSON.stringify(currentObjectives[taskId])) 
-    };
-    handleUpdate({ ...questData, objective: newObjectives });
+    const newObjectives = { ...currentObjectives, [nextId]: JSON.parse(JSON.stringify(currentObjectives[taskId])) };
+    const oldIndex = orderedTaskIds.indexOf(taskId);
+    const newOrder = [...orderedTaskIds];
+    newOrder.splice(oldIndex >= 0 ? oldIndex + 1 : newOrder.length, 0, nextId);
+    handleUpdate({ ...questData, objective: newObjectives, objectiveOrder: newOrder });
     setActiveTaskId(nextId);
   };
 
   const deleteTask = (taskId: number | string) => {
     const newObjectives = { ...questData.objective };
     delete newObjectives[taskId];
-    handleUpdate({ ...questData, objective: newObjectives });
-    if (String(activeTaskId) === String(taskId)) {
-        setActiveTaskId(null);
-    }
+    const newOrder = orderedTaskIds.filter((id) => String(id) !== String(taskId));
+    handleUpdate({ ...questData, objective: newObjectives, objectiveOrder: newOrder });
+    if (String(activeTaskId) === String(taskId)) setActiveTaskId(null);
   };
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
-    
+    const ids = [...orderedTaskIds];
+    const [moved] = ids.splice(result.source.index, 1);
+    ids.splice(result.destination.index, 0, moved);
     const currentObjectives = questData.objective || {};
-    const keys = Object.keys(currentObjectives);
-    const [reorderedKey] = keys.splice(result.source.index, 1);
-    keys.splice(result.destination.index, 0, reorderedKey);
-    
-    // 保持原有 ID，只重新排序
-    const newObjectives: any = {};
-    keys.forEach((key) => {
-        newObjectives[key] = currentObjectives[key];
+    const newObjectives: Record<string, any> = {};
+    ids.forEach((id) => {
+      const k = String(id);
+      if (currentObjectives[k] != null) newObjectives[k] = currentObjectives[k];
     });
-    
-    handleUpdate({ ...questData, objective: newObjectives });
-    // 更新选中的 ID（保持原 ID）
-    if (activeTaskId !== null) {
-        const activeKey = String(activeTaskId);
-        if (keys.includes(activeKey)) {
-            // ID 保持不变，只是顺序变了
-            setActiveTaskId(activeTaskId);
-        }
-    }
+    handleUpdate({ ...questData, objective: newObjectives, objectiveOrder: ids });
   };
 
   const activeTask = activeTaskId !== null && questData.objective ? questData.objective[activeTaskId] : null;
@@ -206,6 +217,7 @@ export default function QuestForm({ fileId }: { fileId: string }) {
             <div style={{ display: 'flex', height: '100%' }}>
                 <QuestTaskList
                     tasks={questData.objective || {}}
+                    orderedTaskIds={orderedTaskIds}
                     activeTaskId={activeTaskId}
                     onSelect={setActiveTaskId}
                     onAdd={addTask}
@@ -230,9 +242,10 @@ export default function QuestForm({ fileId }: { fileId: string }) {
             <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                 {activeTask ? (
                     <QuestDetail
+                        key={activeTaskId}
                         taskId={activeTaskId!}
                         taskData={activeTask}
-                        onUpdate={(newData) => handleTaskUpdate(activeTaskId!, newData)}
+                        onUpdate={(tid, newData) => handleTaskUpdate(tid, newData)}
                         availableObjectives={questData.objective || {}}
                     />
                 ) : (

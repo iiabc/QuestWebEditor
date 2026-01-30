@@ -6,6 +6,7 @@ import { FormInput, ContextMenu } from '@/components/ui';
 
 interface QuestTaskListProps {
     tasks: Record<number | string, any>;
+    orderedTaskIds: (number | string)[];
     activeTaskId: number | string | null;
     onSelect: (id: number | string) => void;
     onAdd: () => void;
@@ -16,7 +17,7 @@ interface QuestTaskListProps {
     width?: number;
 }
 
-export function QuestTaskList({ tasks, activeTaskId, onSelect, onAdd, onDelete, onDuplicate, onReorder, onRename, width = 250 }: QuestTaskListProps) {
+export function QuestTaskList({ tasks, orderedTaskIds, activeTaskId, onSelect, onAdd, onDelete, onDuplicate, onReorder, onRename, width = 250 }: QuestTaskListProps) {
     const [editingId, setEditingId] = useState<number | string | null>(null);
     const [editValue, setEditValue] = useState('');
 
@@ -50,22 +51,7 @@ export function QuestTaskList({ tasks, activeTaskId, onSelect, onAdd, onDelete, 
                     <Droppable droppableId="task-list" direction="vertical">
                         {(provided: DroppableProvided) => (
                             <div ref={provided.innerRef} {...provided.droppableProps}>
-                                {Object.keys(tasks)
-                                    .map((key) => {
-                                        // 尝试转换为数字，如果失败则保持字符串
-                                        const numKey = Number(key);
-                                        return isNaN(numKey) ? key : numKey;
-                                    })
-                                    .sort((a, b) => {
-                                        // 数字优先，然后按字符串排序
-                                        if (typeof a === 'number' && typeof b === 'number') {
-                                            return a - b;
-                                        }
-                                        if (typeof a === 'number') return -1;
-                                        if (typeof b === 'number') return 1;
-                                        return String(a).localeCompare(String(b));
-                                    })
-                                    .map((taskId, index) => (
+                                {orderedTaskIds.map((taskId, index) => (
                                     <Draggable key={String(taskId)} draggableId={String(taskId)} index={index}>
                                         {(provided: DraggableProvided) => (
                                             <div

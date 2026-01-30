@@ -56,11 +56,13 @@ export function sanitizeQuestForYaml(data: any): any {
     const obj: Record<string, any> = {};
     for (const k of Object.keys(out.objective)) {
       const t = out.objective[k];
-      if (t && typeof t === 'object' && t.agent) {
-        const a = applyTrackPruneToAgent(t.agent);
-        const task = { ...t };
-        if (a != null) task.agent = a; else delete task.agent;
-        obj[k] = task;
+      if (t && typeof t === 'object') {
+        const cloned = JSON.parse(JSON.stringify(t));
+        if (cloned.agent) {
+          const a = applyTrackPruneToAgent(cloned.agent);
+          if (a != null) cloned.agent = a; else delete cloned.agent;
+        }
+        obj[k] = cloned;
       } else {
         obj[k] = t;
       }

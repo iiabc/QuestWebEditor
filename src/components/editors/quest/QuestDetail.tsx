@@ -11,7 +11,7 @@ import { ProgressAddon } from './addons/ProgressAddon';
 interface QuestDetailProps {
     taskId: number | string;
     taskData: any;
-    onUpdate: (newData: any) => void;
+    onUpdate: (taskId: number | string, newData: any) => void;
     availableObjectives?: Record<string | number, any>;
 }
 
@@ -92,7 +92,7 @@ export function QuestDetail({ taskId, taskData, onUpdate, availableObjectives }:
                                     onChange={(value, item) => {
                                         // 处理"永不完成"选项（空字符串）
                                         if (value === '') {
-                                            onUpdate({
+                                            onUpdate(taskId, {
                                                 ...taskData,
                                                 event: '',
                                                 node: {}
@@ -106,13 +106,13 @@ export function QuestDetail({ taskId, taskData, onUpdate, availableObjectives }:
 
                                             // 使用 id 作为 event 值（QuestEngine 格式）
                                             const eventId = item.id;
-                                            onUpdate({
+                                            onUpdate(taskId, {
                                                 ...taskData,
                                                 event: eventId,
                                                 node: {}
                                             });
                                         } else {
-                                            onUpdate({ ...taskData, event: undefined, node: {} });
+                                            onUpdate(taskId, { ...taskData, event: undefined, node: {} });
                                         }
                                     }}
                                     placeholder="搜索…"
@@ -138,7 +138,7 @@ export function QuestDetail({ taskId, taskData, onUpdate, availableObjectives }:
                                             data={currentNode}
                                             onChange={(newNode) => {
                                                 // 更新时直接设置 node 字段（QuestEngine 格式）
-                                                onUpdate({ ...taskData, node: newNode });
+                                                onUpdate(taskId, { ...taskData, node: newNode });
                                             }}
                                         />
                                     ) : (
@@ -158,7 +158,7 @@ export function QuestDetail({ taskId, taskData, onUpdate, availableObjectives }:
                             {/* Objective 内置 Addon 组件（编程式） */}
                             <PreAddon
                                 addon={taskData.addon}
-                                onChange={(newAddon) => onUpdate({ ...taskData, addon: newAddon })}
+                                onChange={(newAddon) => onUpdate(taskId, { ...taskData, addon: newAddon })}
                                 scope="objective"
                                 availableObjectives={availableObjectives}
                                 currentObjectiveId={taskId}
@@ -166,7 +166,7 @@ export function QuestDetail({ taskId, taskData, onUpdate, availableObjectives }:
 
                             <ProgressAddon
                                 addon={taskData.addon}
-                                onChange={(newAddon) => onUpdate({ ...taskData, addon: newAddon })}
+                                onChange={(newAddon) => onUpdate(taskId, { ...taskData, addon: newAddon })}
                             />
                         </Stack>
                     </Tabs.Panel>
@@ -176,7 +176,7 @@ export function QuestDetail({ taskId, taskData, onUpdate, availableObjectives }:
                             <Title order={5}>事件触发器</Title>
                             <AgentEditor
                                 data={taskData.agent || {}}
-                                onUpdate={(newAgent) => onUpdate({ ...taskData, agent: newAgent })}
+                                onUpdate={(newAgent) => onUpdate(taskId, { ...taskData, agent: newAgent })}
                                 types={['complete', 'timeout', 'progress', 'track']}
                             />
                         </Stack>
