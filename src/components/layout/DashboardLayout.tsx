@@ -644,7 +644,7 @@ export default function DashboardLayout() {
                 </Box>
             ) : activeFile ? (
                 <Box style={{ flex: 1, width: '100%', overflow: 'hidden' }}>
-                    {activeFile.type === 'quest' && <QuestEditor fileId={activeFile.id} />}
+                    {activeFile.type === 'quest' && <QuestEditor key={activeFile.id} fileId={activeFile.id} />}
                     {activeFile.type === 'conversation' && <ConversationEditor fileId={activeFile.id} />}
                     {activeFile.type === 'group' && <GroupEditor fileId={activeFile.id} />}
                     {activeFile.type === 'pool' && <PoolEditor fileId={activeFile.id} />}
