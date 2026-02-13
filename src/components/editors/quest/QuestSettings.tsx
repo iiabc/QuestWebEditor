@@ -2,6 +2,7 @@ import { Tabs, ScrollArea, Box, Stack, Title } from '@mantine/core';
 import { IconInfoCircle, IconScript, IconPuzzle, IconDatabase } from '@tabler/icons-react';
 import { useMemo } from 'react';
 import { FormInput, FormSection } from '@/components/ui';
+import { DebouncedTextInput } from '@/components/ui/DebouncedInput';
 import { useProjectStore } from '@/store/useProjectStore';
 import { parseYaml } from '@/utils/yaml-utils';
 import { AgentEditor } from './AgentEditor';
@@ -52,12 +53,13 @@ export function QuestSettings({ fileId, questId, questData, onUpdate }: QuestSet
                         <Stack gap="md">
                             <Title order={4}>基本信息</Title>
                             <FormSection>
-                                <FormInput
+                                <DebouncedTextInput
                                     label="任务 ID"
                                     description=""
                                     value={questId}
-                                    onChange={(e) => onUpdate(questData, e.target.value)}
+                                    onChange={(val) => onUpdate(questData, val)}
                                     error={idError}
+                                    debounceMs={500}
                                 />
                                 <FormInput
                                     label="显示名称"
